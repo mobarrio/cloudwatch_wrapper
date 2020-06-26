@@ -244,7 +244,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "http://192.168.1.16:3000/api/v1/region/eu-west-1/namespace/EC2/metricname/CPUUtilization/dname/AutoScalingGroupName/dvalue/ae-tp-pro-a-eks-workers-NodeGroup-BNZBW4D364M4",
+					"raw": "http://192.168.1.16:3000/api/v1/region/eu-west-1/namespace/EC2/metricname/CPUUtilization/dname/AutoScalingGroupName/dvalue/BNZBW4D364M4",
 					"protocol": "http",
 					"host": [
 						"192",
@@ -265,7 +265,7 @@
 						"dname",
 						"AutoScalingGroupName",
 						"dvalue",
-						"ae-tp-pro-a-eks-workers-NodeGroup-BNZBW4D364M4"
+						"BNZBW4D364M4"
 					]
 				}
 			},

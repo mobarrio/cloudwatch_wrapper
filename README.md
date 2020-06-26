@@ -2,6 +2,13 @@
 Repositorio para realizar consultas a Cloudwatch via API REST utilizando AWS-SDK + NodeJS
 
 
+## Instalacion de Docker-Compose
+```
+# curl -L https://github.com/docker/compose/releases/download/1.25.4/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+# ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+# docker-compose --version
+```
+
 ## AWS-SDK Credentials
 `El acceso se realiza via el archivo de credenciales.`
 

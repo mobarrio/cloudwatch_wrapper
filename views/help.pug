@@ -1,0 +1,53 @@
+extends layout
+
+block content
+  h1= title
+  p(class="h4") API #{version}
+  br
+
+  h3 Lista de servicios (namespace) a consultar 
+  div(class="h5" style="height: 50px;") <a href="/api/#{version}/region/eu-west-1/namespace/RDS"  target="_blank">RDS</a>, 
+    <a href="/api/#{version}/region/eu-west-1/namespace/S3"   target="_blank">S3</a>, 
+    <a href="/api/#{version}/region/eu-west-1/namespace/EC2"  target="_blank">EC2</a>, 
+    <a href="/api/#{version}/region/eu-west-1/namespace/Logs" target="_blank">Logs</a>, 
+    <a href="/api/#{version}/region/eu-west-1/namespace/ELB"  target="_blank">ELB</a>, 
+    <a href="/api/#{version}/region/eu-west-1/namespace/EFS"  target="_blank">EFS</a>, 
+    <a href="/api/#{version}/region/eu-west-1/namespace/ElasticBeanstalk" target="_blank">ElasticBeanstalk</a>
+  div(class="alert alert-dark" role="alert") Mas informacion: <a href="https://docs.aws.amazon.com/es_es/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html" target="_blank">Docs AWS</a>
+  br
+
+  h3 Endpoints
+  div
+     table(class="table")
+        thead(class="thead-dark")
+           tr
+              th(scope="col") METHOD
+              th(scope="col") ENDPOINT
+              th(scope="col") DESC
+              th(scope="col") PARAMS
+              th(scope="col") TEST
+        tbody
+           tr
+              td(scope="row") GET
+              td /api/v1
+              td <b>Listado de Endpoints</b>
+              td
+              td
+           tr
+              td(scope="row") POST
+              td /api/v1/region/[REGION]/namespace/[NAMESPACE]
+              td <b>Listrar todas las metricas que presenta RDS</b>
+              td Authorization: Bearer [Token]
+              td <a href="/api/#{version}/region/eu-west-1/namespace/RDS" target="_blank">TEST</a>
+           tr
+              td(scope="row") POST
+              td /api/v1/region/[REGION]/namespace/[NAMESPACE]/dname/[DIMENSIONS NAME]/dvalue/[DIMENSIONS VALUE]
+              td <b>Listrar todas las metricas que presenta el Engine Postgres</b>
+              td Authorization: Bearer [Token]
+              td <a href="/api/#{version}/region/eu-west-1/namespace/RDS/dname/EngineName/dvalue/postgres" target="_blank">TEST</a>
+           tr
+              td(scope="row") POST
+              td /api/v1/region/[REGION]/namespace/[NAMESPACE]/metricname/[METRICNAME]/dname/[DIMENSIONS NAME]/dvalue/[DIMENSIONS VALUE]
+              td <b>Listrar el valor de la metrica CPUUtilization del Engine Postgres</b>
+              td Authorization: Bearer [Token]
+              td <a href="/api/#{version}/region/eu-west-1/namespace/RDS/metricname/CPUUtilization/dname/EngineName/dvalue/postgres" target="_blank">TEST</a>

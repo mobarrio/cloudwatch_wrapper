@@ -4,8 +4,8 @@ var AWS = require('aws-sdk');
 var jwt = require('jsonwebtoken');
 
 // Get AWS Credentials
-var credentials = new AWS.SharedIniFileCredentials({profile: process.env.CRED});
-AWS.config.credentials = credentials;
+// var credentials = new AWS.SharedIniFileCredentials({profile: process.env.CRED});
+// AWS.config.credentials = credentials;
 
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Cloudwatch Wrapper', version: 'v1' });
@@ -31,7 +31,11 @@ router.use(function(req, res, next) {
 
 });
 
-router.post('/v1/region/:Region/namespace/:Namespace', function (req, res) {
+router.post('/v1/env/:env/region/:Region/namespace/:Namespace', function (req, res) {
+  var environment = req.params.env || 'pro';
+  var credentials = new AWS.SharedIniFileCredentials({profile: environment});
+  AWS.config.credentials = credentials;
+
   AWS.config.update({region: req.params.Region});
   var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
   var params = {
@@ -49,7 +53,11 @@ router.post('/v1/region/:Region/namespace/:Namespace', function (req, res) {
   });
 });
 
-router.post('/v1/region/:Region/namespace/:Namespace/dname/:Name/dvalue/:Value', function (req, res) {
+router.post('/v1/env/:env/region/:Region/namespace/:Namespace/dname/:Name/dvalue/:Value', function (req, res) {
+  var environment = req.params.env || 'pro';
+  var credentials = new AWS.SharedIniFileCredentials({profile: environment});
+  AWS.config.credentials = credentials;
+
   AWS.config.update({region: req.params.Region});
   var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
   var params = {
@@ -71,9 +79,12 @@ router.post('/v1/region/:Region/namespace/:Namespace/dname/:Name/dvalue/:Value',
 
 });
 
-router.post('/v1/region/:Region/namespace/:Namespace/metricname/:MetricName/dname/:Name/dvalue/:Value', function (req, res) {
-  AWS.config.update({region: req.params.Region});
+router.post('/v1/env/:env/region/:Region/namespace/:Namespace/metricname/:MetricName/dname/:Name/dvalue/:Value', function (req, res) {
+  var environment = req.params.env || 'pro';
+  var credentials = new AWS.SharedIniFileCredentials({profile: environment});
+  AWS.config.credentials = credentials;
 
+  AWS.config.update({region: req.params.Region});
   var durationInMinutes = 60;
   var period = durationInMinutes * 60;
   var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
@@ -104,7 +115,11 @@ router.post('/v1/region/:Region/namespace/:Namespace/metricname/:MetricName/dnam
       }
   });
 
+});
 
+router.get('/v1/env/:env/health', function(req, res) { 
+  var environment = req.params.env || 'pro';
+  res.json({ status: 'UP', env: environment }); 
 });
 
 module.exports = router;

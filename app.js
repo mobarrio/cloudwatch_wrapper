@@ -7,9 +7,10 @@ var jwt = require('jsonwebtoken');
 var fs = require('fs');
 var bearerToken = require('express-bearer-token');
 
-var indexRouter = require('./routes/index');
-var cwRouter    = require('./routes/cw');
-var authRouter  = require('./routes/authentication');
+var indexRouter  = require('./routes/index');
+var cwRouter     = require('./routes/cw');
+var authRouter   = require('./routes/authentication');
+var healthRouter = require('./routes/health');
 var app = express();
 
 // view engine setup
@@ -28,6 +29,7 @@ app.use(bearerToken());
 app.use('/',     indexRouter);
 app.use('/api',  cwRouter);
 app.use('/auth', authRouter);
+app.use('/health', healthRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

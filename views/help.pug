@@ -24,6 +24,7 @@ block content
               th(scope="col") METHOD
               th(scope="col") ENDPOINT
               th(scope="col") DESC
+              th(scope="col") HEADER
               th(scope="col") PARAMS
               th(scope="col") TEST
         tbody
@@ -34,20 +35,29 @@ block content
               td
               td
            tr
+              td(scope="row") GET
+              td /api/v1/health
+              td <b>Healthcheck de la API</b>
+              td Authorization: Bearer [Token]
+              td <a href="/api/#{version}/health" target="_blank">TEST</a>
+           tr
               td(scope="row") POST
-              td /api/v1/region/[REGION]/namespace/[NAMESPACE]
+              td /api/v1/env/[ENVIRONMENT]/region/[REGION]/namespace/[NAMESPACE]
               td <b>Listrar todas las metricas que presenta RDS</b>
               td Authorization: Bearer [Token]
+              td ENVIRONMENT: AWS Credentials<br>REGION: AWS Region<br>NAMESPACE: AWS Service 
               td <a href="/api/#{version}/region/eu-west-1/namespace/RDS" target="_blank">TEST</a>
            tr
               td(scope="row") POST
-              td /api/v1/region/[REGION]/namespace/[NAMESPACE]/dname/[DIMENSIONS NAME]/dvalue/[DIMENSIONS VALUE]
+              td /api/v1/env/[ENVIRONMENT]/region/[REGION]/namespace/[NAMESPACE]/dname/[DIMENSIONS NAME]/dvalue/[DIMENSIONS VALUE]
               td <b>Listrar todas las metricas que presenta el Engine Postgres</b>
               td Authorization: Bearer [Token]
+              td ENVIRONMENT: AWS Credentials<br>REGION: AWS Region<br>NAMESPACE: AWS Service<br>DNAME: Dimensions Value<br>DVALUE: Dimensions Value  
               td <a href="/api/#{version}/region/eu-west-1/namespace/RDS/dname/EngineName/dvalue/postgres" target="_blank">TEST</a>
            tr
               td(scope="row") POST
-              td /api/v1/region/[REGION]/namespace/[NAMESPACE]/metricname/[METRICNAME]/dname/[DIMENSIONS NAME]/dvalue/[DIMENSIONS VALUE]
+              td /api/v1/env/[ENVIRONMENT]/region/[REGION]/namespace/[NAMESPACE]/metricname/[METRICNAME]/dname/[DIMENSIONS NAME]/dvalue/[DIMENSIONS VALUE]
               td <b>Listrar el valor de la metrica CPUUtilization del Engine Postgres</b>
               td Authorization: Bearer [Token]
+              td ENVIRONMENT: AWS Credentials<br>REGION: AWS Region<br>NAMESPACE: AWS Service<br>METRICNAME: Metrica<br>DNAME: Dimensions Value<br>DVALUE: Dimensions Value  
               td <a href="/api/#{version}/region/eu-west-1/namespace/RDS/metricname/CPUUtilization/dname/EngineName/dvalue/postgres" target="_blank">TEST</a>

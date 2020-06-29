@@ -76,6 +76,67 @@
 			"response": []
 		},
 		{
+			"name": "Health",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://192.168.1.16:3000/health",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"1",
+						"16"
+					],
+					"port": "3000",
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health API",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGVjayI6dHJ1ZSwiaWF0IjoxNTkzMTc2MDg1LCJleHAiOjQ3NDg5MzYwODV9.fhAEWCEArPIYkAHkaD5P7u_fRZDz1GUbTQs_ukB1FL0RnEUHSlzU_XjI8pHNNZKpt9MPPHBe_D1yXQW7ZO9F_j8V2wl5CGcWwJ7dF44YIU5L9g6lj97IqHJ9kv4_SpbTAhC_Cal0i7hgZCF8oHgHZLXQ8tKqu_mfaoIsIqf6ZOUT2xD8ZSOt1280y84Hp4CltqUgZfF0599ukv0PLF33a0ykGiDRhHxA4hAusiEQ8w40BRwAlI4xpvGO5lqPoHbeNtaCj-l7MLYyK7IlcNo0qDOhxS0Br94mcuaxKpUPs9scLtGsUPfi6ikMNqRkZa7b02fGsOlHrzmnnQc2c1R3h334s5-QsXEn0xiUJPNoS63pO1a33ZBZ2n6CkvgUJ8dcdCHqheMx-PQ5DM59tMVUzuVFhgML3PrKOhUlTA-ir4URMXAuMfgQN7tzypgsvdEajeHkLiT5BI64MMfuQDn1LkiB_3OdKYCdsCMDrySToWrTXTpRTBQEbfUCs7OSqpPRTmq7sQQmO1VatcZEmqnBLOIQpVFaYWjoKBk5fx37jgY7LE8kz-2-rRQdh15TMZVYzLf_bXqzkuHd3G_0eN5ow63cOrbldZ_qQL5wh3y5Als28Qqqu-5kpc1JWGNGnGhxMnD_USCCLJ5jqnKiioWpXAiGGsxSHzkZ6Y_9aeOTAQM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://192.168.1.16:3000/api/v1/env/pro/health",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"1",
+						"16"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"env",
+						"pro",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Authentication Get Token 100 Years",
 			"request": {
 				"auth": {
@@ -163,7 +224,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "http://192.168.1.16:3000/api/v1/region/eu-west-1/namespace/RDS",
+					"raw": "http://192.168.1.16:3000/api/v1/env/pro/region/eu-west-1/namespace/RDS",
 					"protocol": "http",
 					"host": [
 						"192",
@@ -175,6 +236,8 @@
 					"path": [
 						"api",
 						"v1",
+						"env",
+						"pro",
 						"region",
 						"eu-west-1",
 						"namespace",
@@ -200,7 +263,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "http://192.168.1.16:3000/api/v1/region/eu-west-1/namespace/RDS/metricname/CPUUtilization/dname/EngineName/dvalue/postgres",
+					"raw": "http://192.168.1.16:3000/api/v1/env/pro/region/eu-west-1/namespace/RDS/metricname/CPUUtilization/dname/EngineName/dvalue/postgres",
 					"protocol": "http",
 					"host": [
 						"192",
@@ -212,6 +275,8 @@
 					"path": [
 						"api",
 						"v1",
+						"env",
+						"pro",
 						"region",
 						"eu-west-1",
 						"namespace",
@@ -244,7 +309,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "http://192.168.1.16:3000/api/v1/region/eu-west-1/namespace/EC2/metricname/CPUUtilization/dname/AutoScalingGroupName/dvalue/BNZBW4D364M4",
+					"raw": "http://192.168.1.16:3000/api/v1/env/pro/region/eu-west-1/namespace/EC2/metricname/CPUUtilization/dname/AutoScalingGroupName/dvalue/ae-tp-pro-a-eks-workers-NodeGroup-BNZBW4D364M4",
 					"protocol": "http",
 					"host": [
 						"192",
@@ -256,6 +321,8 @@
 					"path": [
 						"api",
 						"v1",
+						"env",
+						"pro",
 						"region",
 						"eu-west-1",
 						"namespace",
@@ -265,7 +332,7 @@
 						"dname",
 						"AutoScalingGroupName",
 						"dvalue",
-						"BNZBW4D364M4"
+						"ae-tp-pro-a-eks-workers-NodeGroup-BNZBW4D364M4"
 					]
 				}
 			},

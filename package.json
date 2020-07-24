@@ -1,6 +1,6 @@
 {
   "name": "cloudwatch",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -12,6 +12,7 @@
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "express-bearer-token": "^2.4.0",
+    "figlet": "^1.5.0",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.27.0",

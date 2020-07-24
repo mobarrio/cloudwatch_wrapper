@@ -6,13 +6,7 @@ block content
   br
 
   h3 Lista de servicios (namespace) a consultar 
-  div(class="h5" style="height: 50px;") <a href="/api/#{version}/region/eu-west-1/namespace/RDS"  target="_blank">RDS</a>, 
-    <a href="/api/#{version}/region/eu-west-1/namespace/S3"   target="_blank">S3</a>, 
-    <a href="/api/#{version}/region/eu-west-1/namespace/EC2"  target="_blank">EC2</a>, 
-    <a href="/api/#{version}/region/eu-west-1/namespace/Logs" target="_blank">Logs</a>, 
-    <a href="/api/#{version}/region/eu-west-1/namespace/ELB"  target="_blank">ELB</a>, 
-    <a href="/api/#{version}/region/eu-west-1/namespace/EFS"  target="_blank">EFS</a>, 
-    <a href="/api/#{version}/region/eu-west-1/namespace/ElasticBeanstalk" target="_blank">ElasticBeanstalk</a>
+  div(class="h5" style="height: 50px;") <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html"  target="_blank">NameSpaces</a>
   div(class="alert alert-dark" role="alert") Mas informacion: <a href="https://docs.aws.amazon.com/es_es/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html" target="_blank">Docs AWS</a>
   br
 
@@ -20,44 +14,68 @@ block content
   div
      table(class="table")
         thead(class="thead-dark")
-           tr
+            tr
               th(scope="col") METHOD
               th(scope="col") ENDPOINT
               th(scope="col") DESC
-              th(scope="col") HEADER
               th(scope="col") PARAMS
-              th(scope="col") TEST
         tbody
-           tr
-              td(scope="row") GET
-              td /api/v1
-              td <b>Listado de Endpoints</b>
-              td
-              td
-           tr
-              td(scope="row") GET
-              td /api/v1/health
-              td <b>Healthcheck de la API</b>
-              td Authorization: Bearer [Token]
-              td <a href="/api/#{version}/health" target="_blank">TEST</a>
-           tr
-              td(scope="row") POST
-              td /api/v1/env/[ENVIRONMENT]/region/[REGION]/namespace/[NAMESPACE]
-              td <b>Listrar todas las metricas que presenta RDS</b>
-              td Authorization: Bearer [Token]
-              td ENVIRONMENT: AWS Credentials<br>REGION: AWS Region<br>NAMESPACE: AWS Service 
-              td <a href="/api/#{version}/region/eu-west-1/namespace/RDS" target="_blank">TEST</a>
-           tr
-              td(scope="row") POST
-              td /api/v1/env/[ENVIRONMENT]/region/[REGION]/namespace/[NAMESPACE]/dname/[DIMENSIONS NAME]/dvalue/[DIMENSIONS VALUE]
-              td <b>Listrar todas las metricas que presenta el Engine Postgres</b>
-              td Authorization: Bearer [Token]
-              td ENVIRONMENT: AWS Credentials<br>REGION: AWS Region<br>NAMESPACE: AWS Service<br>DNAME: Dimensions Value<br>DVALUE: Dimensions Value  
-              td <a href="/api/#{version}/region/eu-west-1/namespace/RDS/dname/EngineName/dvalue/postgres" target="_blank">TEST</a>
-           tr
-              td(scope="row") POST
-              td /api/v1/env/[ENVIRONMENT]/region/[REGION]/namespace/[NAMESPACE]/metricname/[METRICNAME]/dname/[DIMENSIONS NAME]/dvalue/[DIMENSIONS VALUE]
-              td <b>Listrar el valor de la metrica CPUUtilization del Engine Postgres</b>
-              td Authorization: Bearer [Token]
-              td ENVIRONMENT: AWS Credentials<br>REGION: AWS Region<br>NAMESPACE: AWS Service<br>METRICNAME: Metrica<br>DNAME: Dimensions Value<br>DVALUE: Dimensions Value  
-              td <a href="/api/#{version}/region/eu-west-1/namespace/RDS/metricname/CPUUtilization/dname/EngineName/dvalue/postgres" target="_blank">TEST</a>
+            tr
+               td(scope="row") GET
+               td /api/v1
+               td <b>Listado de Endpoints</b>
+               td
+            tr
+               td(scope="row") GET
+               td /api/v1/health
+               td <b>Healthcheck de la API</b>
+               td Authorization: Bearer [Token]
+            tr
+               td(scope="row") POST
+               td /api/v1/get/btoken
+               td <b>Recupera el Bearer Token</b>
+               td Authorization: Basic [Token]
+            tr
+               td(scope="row") GET
+               td /api/v1/aws/listmetrics
+                  div(style='text-align: left;font-size: 12px;color: red;')
+                     br
+                     | <b>Pasar en el Body</b>
+                     pre.
+                       {
+                          "Config": {
+                             "Account": "pro",
+                             "Region": "eu-west-1"
+                           },
+                           "Metric": {
+                              "Namespace": "AWS/DX"
+                           }
+                       }   
+               td <b>Listrar todas las metricas que presenta el Namespace (Short Method)</b><br><b>El Namespace AWS/DX se pasa de la siguiente forma AWX-DX</b>
+               td Authorization: Bearer [Token]
+            tr
+               td(scope="row") POST
+               td /api/v1/aws/getmetrics
+                  div(style='text-align: left;font-size: 12px;color: red;')
+                     br
+                     | <b>Pasar en el Body</b>
+                     pre.
+                        {
+                            "Config": {
+                                "Account": "pro",
+                                "Region": "eu-west-1"
+                            },
+                            "Metric": {
+                                "Namespace": "AWS/RDS",
+                                "MetricName": "CPUUtilization",
+                                "Dimensions": [
+                                    {
+                                        "Name": "EngineName",
+                                        "Value": "postgres"
+                                    }
+                                ],
+                                "Statistics": ["SampleCount", "Average", "Sum", "Minimum", "Maximum"]
+                            }
+                        }
+               td <b>Listrar el valor de la metrica solicitada (Short Method)</b>
+               td Authorization: Bearer [Token]

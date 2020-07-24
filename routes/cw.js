@@ -31,93 +31,104 @@ router.use(function(req, res, next) {
 
 });
 
-router.post('/v1/env/:env/region/:Region/namespace/:Namespace', function (req, res) {
-  var environment = req.params.env || 'pro';
-  var credentials = new AWS.SharedIniFileCredentials({profile: environment});
-  AWS.config.credentials = credentials;
+router.get('/v1/aws/listmetrics', function (req, res) {
+  const account = req.body.Config.Account || 'pro';
+  const region = req.body.Config.Region;
+  const metric = req.body.Metric;
 
-  AWS.config.update({region: req.params.Region});
-  var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
-  var params = {
-          "Namespace": "AWS/"+req.params.Namespace,
-          "Dimensions": []
-  };
-
-  cw.listMetrics(params, function(err, data) {
-    if (err) {
-      console.log("Error", err);
-    } else {
-      // res.send(data.Metrics);
-      res.send(data);
-    }
-  });
-});
-
-router.post('/v1/env/:env/region/:Region/namespace/:Namespace/dname/:Name/dvalue/:Value', function (req, res) {
-  var environment = req.params.env || 'pro';
-  var credentials = new AWS.SharedIniFileCredentials({profile: environment});
-  AWS.config.credentials = credentials;
-
-  AWS.config.update({region: req.params.Region});
-  var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
-  var params = {
-          "Namespace": "AWS/"+req.params.Namespace,
-          "Dimensions": [{
-              "Name": req.params.Name,
-              "Value": req.params.Value
-           }]
-  };
-
-  cw.listMetrics(params, function(err, data) {
-    if (err) {
-      console.log("Error", err);
-    } else {
-      // res.send(data.Metrics);
-      res.send(data);
-    }
-  });
-
-});
-
-router.post('/v1/env/:env/region/:Region/namespace/:Namespace/metricname/:MetricName/dname/:Name/dvalue/:Value', function (req, res) {
-  var environment = req.params.env || 'pro';
-  var credentials = new AWS.SharedIniFileCredentials({profile: environment});
-  AWS.config.credentials = credentials;
-
-  AWS.config.update({region: req.params.Region});
-  var durationInMinutes = 60;
-  var period = durationInMinutes * 60;
-  var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
-  var EndTime = new Date;
-  var StartTime = new Date(EndTime - 15*60*1000);
-  var params = {
-      "EndTime": EndTime,
-      "StartTime": StartTime,
-      "Period": period,
-      "Namespace": "AWS/"+req.params.Namespace,
-      "MetricName": req.params.MetricName,
-      "Dimensions": [
-          {
-              "Name": req.params.Name,
-              "Value": req.params.Value
-          }
-      ], 
-      "Statistics": ['Average'], //['SampleCount', 'Average', 'Sum', 'Minimum', 'Maximum'],
-  };
-
-  //console.log(params)
-  cw.getMetricStatistics(params, function (err, data) {
-      if (err) {
-          console.log("Error", err);
-      } else {
-          // console.log(JSON.stringify(data.Metrics));
-          res.send(data.Datapoints[0]);
+  try {
+    var credentials = new AWS.SharedIniFileCredentials({profile: account});
+    AWS.config.update({
+      region: region,
+      credentials: credentials,
+      httpOptions: {
+        connectTimeout: 1000, // Syn Timeout
+        timeout: 3000 // Inactivity timeout
       }
-  });
+    });
+    var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
+  } catch (error) {
+    res.status(401).json({status: "error", msg: "Error retrieveing credentials", metric: metric, region: region, account: account});
+    return
+  }
+  try {
+    var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
+    var params = {
+        "Namespace": metric.Namespace,
+        "Dimensions": metric.Dimensions || []
+    };
+
+    cw.listMetrics(params, function(err, data) {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        res.send(data);
+      }
+    });
+  } catch(error){
+    res.status(401).json({status: "error", msg: "Error in parameters", body: metric});
+    return   
+  }
 
 });
 
-router.get('/v1/env/:env/health', function(req, res) { 
+router.post('/v1/aws/getmetrics', function (req, res) {
+  const account = req.body.Config.Account || 'pro';
+  const region = req.body.Config.Region;
+  const metric = req.body.Metric;
+
+  try {
+    var credentials = new AWS.SharedIniFileCredentials({profile: account});
+    AWS.config.update({
+      region: region,
+      credentials: credentials,
+      httpOptions: {
+        connectTimeout: 1000, // Syn Timeout
+        timeout: 3000 // Inactivity timeout
+      }
+    });
+    var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
+
+  } catch (error) {
+    res.status(401).json({status: "error", msg: "Error retrieveing credentials"});
+    return
+  }
+
+  try {
+    var durationInMinutes = 60;
+    var period = durationInMinutes * 60;
+    var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
+    var EndTime = new Date;
+    var StartTime = new Date(EndTime - 15*60*1000);
+    var params = {
+        "EndTime": EndTime,
+        "StartTime": StartTime,
+        "Period": period,
+        "Namespace": metric.Namespace,
+        "MetricName": metric.MetricName,
+        "Dimensions": [
+            {
+                "Name": metric.Dimensions[0].Name,
+                "Value": metric.Dimensions[0].Value
+            }
+        ], 
+        "Statistics": metric.Statistics || ['SampleCount', 'Average', 'Sum', 'Minimum', 'Maximum'],
+    };
+
+    cw.getMetricStatistics(params, function (err, data) {
+        if (err) {
+            console.log("Error", err);
+        } else {
+            res.send(data.Datapoints[0] || {"status": "error", "msg":"No hay metricas para este objeto.\nVerifique los parametros que esta enviando en el Body.", "body": metric});
+        }
+    });
+  } catch(error){
+    res.status(401).json({status: "error", msg: "Error in parameters", body: metric});
+    return   
+  }
+});
+
+router.get('/v1/health', function(req, res) { 
   var environment = req.params.env || 'pro';
   res.json({ status: 'UP', env: environment }); 
 });

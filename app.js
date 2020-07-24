@@ -6,7 +6,12 @@ var logger = require('morgan');
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
 var bearerToken = require('express-bearer-token');
+const figlet  = require('figlet');
+const pkgname = process.env.npm_package_name;
+const pkgversion = process.env.npm_package_version;
 
+console.log(figlet.textSync('  '+pkgname+' v '+pkgversion));
+console.log("------------------------------------------------------------------------------------------------");
 var indexRouter  = require('./routes/index');
 var cwRouter     = require('./routes/cw');
 var authRouter   = require('./routes/authentication');

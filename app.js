@@ -1,14 +1,23 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var jwt = require('jsonwebtoken');
-var fs = require('fs');
-var bearerToken = require('express-bearer-token');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const moment = require('moment');
+const bearerToken = require('express-bearer-token');
 const figlet  = require('figlet');
+const auth = require('basic-auth');
+const conf = require('./config/config');
 const pkgname = process.env.npm_package_name;
 const pkgversion = process.env.npm_package_version;
+const debug = false; // Set true para ver debug por consola.
+
+global.logts = function(msg){
+   let ts = moment(new Date()).format('DD/MM/YYYY HH:mm:ss.SSS - ')
+   debug && console.log(ts,msg)
+ };
 
 console.log(figlet.textSync('  '+pkgname+' v '+pkgversion));
 console.log("------------------------------------------------------------------------------------------------");
@@ -30,10 +39,60 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bearerToken());
+app.use(function(req, res, next) {
+   logts('Middleware de autenticaicon Basic');
+   if(req.token) {
+      logts('Bearer token definodo. Procede con Autenticacion JWT.');
+      next();
+   }else{
+      logts('Bearer token no definodo. Procede con Autenticacion Basic.');
+      var credentials = auth(req);
+      if (credentials === undefined ) { 
+         if(credentials != undefined && (credentials.name === "admin" && credentials.pass === "zabbix")) {
+            logts('Usuario autenticado.');
+            next();
+         }else{
+            logts('Usuario no autenticado.');
+            res.statusCode = 401;
+            res.setHeader('WWW-Authenticate', 'Basic realm="Cloudwatch Wrapper"');
+            res.end('Unauthorized.');
+         } 
+      } else {
+         logts('Usuario autenticado credenciales disponibles.');
+         const authstr = credentials.name + ':' + credentials.pass;
+         req.headers.authorization = 'Basic ' + new Buffer.alloc(authstr.length,authstr).toString('base64');
+         next();
+      }
+   }
+});
 
-app.use('/',     indexRouter);
-app.use('/api',  cwRouter);
-app.use('/auth', authRouter);
+app.use(function(req, res, next) {
+   logts('Middleware de autenticaicon Bearer');
+   if (conf.auth.exclude.includes(req.url.valueOf())) {
+      logts('Endpoint excluido de autenticacion.');
+      return next();
+   }else{
+      logts('Verificacion del Bearer token.');
+      if (req.token) {
+         jwt.verify(req.token, req.app.get('privateKey'), { algorithms: ['RS256'] }, function(err, decoded) {
+         if (err) {
+            return res.json({ msg: err });
+         } else {
+         logts('Bearer token verificado.');
+         next();
+         }
+         });
+      } else {
+         logts('Bearer token no encontrado.');
+         res.send({ msg: 'Bearer token not found.' });
+      }
+   }
+});
+
+// Routes
+app.use('/',       indexRouter);
+app.use('/api',    cwRouter);
+app.use('/auth',   authRouter);
 app.use('/health', healthRouter);
 
 // catch 404 and forward to error handler
@@ -45,7 +104,6 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-   //req.setTimeout(5000);
    res.locals.message = err.message;
    res.locals.error = req.app.get('env') === 'development' ? err : {};
 

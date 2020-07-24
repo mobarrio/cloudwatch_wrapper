@@ -3,35 +3,16 @@ var router = express.Router();
 var AWS = require('aws-sdk');
 var jwt = require('jsonwebtoken');
 
-// Get AWS Credentials
-// var credentials = new AWS.SharedIniFileCredentials({profile: process.env.CRED});
-// AWS.config.credentials = credentials;
+function getApiHelp(req, res, next) {
+    res.render('help', { title: 'Cloudwatch Wrapper', version: 'v1' });   
+};
 
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Cloudwatch Wrapper', version: 'v1' });
-});
+function getHealthCheck(req, res, next) { 
+  var environment = req.params.env || 'pro';
+  res.json({ status: 'UP' }); 
+};
 
-router.get('/v1', function(req, res, next) {
-  res.render('help', { title: 'Cloudwatch Wrapper', version: 'v1' });
-});
-
-// Secure api
-router.use(function(req, res, next) {
-   if (req.token) {
-      jwt.verify(req.token, req.app.get('privateKey'), { algorithms: ['RS256'] }, function(err, decoded) {
-        if (err) {
-          return res.json({ msg: err });
-        } else {
-          next();
-        }
-      });
-   } else {
-      res.send({ msg: 'Token not found.' });
-   }
-
-});
-
-router.get('/v1/aws/listmetrics', function (req, res) {
+function ListMetrics(req, res, next) {
   const account = req.body.Config.Account || 'pro';
   const region = req.body.Config.Region;
   const metric = req.body.Metric;
@@ -60,7 +41,7 @@ router.get('/v1/aws/listmetrics', function (req, res) {
 
     cw.listMetrics(params, function(err, data) {
       if (err) {
-        console.log("Error", err);
+        logts("Error", err);
       } else {
         res.send(data);
       }
@@ -70,9 +51,9 @@ router.get('/v1/aws/listmetrics', function (req, res) {
     return   
   }
 
-});
+};
 
-router.post('/v1/aws/getmetrics', function (req, res) {
+function getMetrics(req, res, next) {
   const account = req.body.Config.Account || 'pro';
   const region = req.body.Config.Region;
   const metric = req.body.Metric;
@@ -117,7 +98,7 @@ router.post('/v1/aws/getmetrics', function (req, res) {
 
     cw.getMetricStatistics(params, function (err, data) {
         if (err) {
-            console.log("Error", err);
+          logts("Error", err);
         } else {
             res.send(data.Datapoints[0] || {"status": "error", "msg":"No hay metricas para este objeto.\nVerifique los parametros que esta enviando en el Body.", "body": metric});
         }
@@ -126,11 +107,16 @@ router.post('/v1/aws/getmetrics', function (req, res) {
     res.status(401).json({status: "error", msg: "Error in parameters", body: metric});
     return   
   }
-});
+};
 
-router.get('/v1/health', function(req, res) { 
-  var environment = req.params.env || 'pro';
-  res.json({ status: 'UP', env: environment }); 
-});
+router.get('/', getApiHelp);
+router.get('/v1', getApiHelp);
+router.get('/v1/health', getHealthCheck);
+router.get('/v1/aws/listmetrics', ListMetrics);
+router.post('/v1/aws/getmetrics', getMetrics);
+router.get('*', (req, res) => res.status(403).json({
+  errorCode: '404',
+  errorDescription: 'Ruta no encontrada'
+}));
 
 module.exports = router;

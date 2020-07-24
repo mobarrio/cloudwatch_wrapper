@@ -24,14 +24,24 @@ block content
               td(scope="row") GET
               td /auth
               td <b>Listado de Endpoints</b>
-              td [Username: admin Password: zabbix]
+              td Authorization: Basic [Credenciales codificadas en base64 - Username: admin Password: zabbix]
            tr
               td(scope="row") POST
-              td /auth/ttl/[TTL]
-              td <b>Genera un nuevo Token con el TTL especificado (ej. 10s, 10m, 1h, 1d, 1y) Default 1h</b>
+              td /auth/get/credentials
+              td <b>Genera un nuevo Token con el TTL de 1h</b>
+              td Authorization: Basic [Credenciales codificadas en base64 - Username: admin Password: zabbix]
+           tr
+              td(scope="row") POST
+              td /auth/get/credentials/forever
+              td <b>Genera un nuevo Token con el TTL de 100 años</b>
               td Authorization: Basic [Credenciales codificadas en base64 - Username: admin Password: zabbix]
            tr
               td(scope="row") POST
               td /auth/verify
               td <b>Verifica la caducidad del Token</b>
+              td Authorization: Bearer [Token]
+           tr
+              td(scope="row") GET
+              td /api/v1
+              td <b>Listado de Endpoints disponibles</b>
               td Authorization: Bearer [Token]

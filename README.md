@@ -64,3 +64,6 @@ aws_secret_access_key = [SECRET_KEY]
 ![Verify Bearer Token](https://imgur.com/JE8INef.png)
 ![List Metrics](https://imgur.com/49YD4Wa.png)
 ![Get Metrics](https://imgur.com/vB573t7.png)
+
+## Video
+![CloudWatch](https://user-images.githubusercontent.com/1693682/88439546-cb5c3000-ce0b-11ea-88ad-36d5fd3c7e7b.gif)

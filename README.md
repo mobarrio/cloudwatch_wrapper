@@ -55,3 +55,12 @@ aws_secret_access_key = [SECRET_KEY]
 ## Usuarios y Password
 **Usr:** admin
 **Psw:** zabbix
+
+## Imagenes
+[Login](https://imgur.com/cPtpBKH)
+[Help](https://imgur.com/2lvcW1w)
+[API Help](https://imgur.com/rui2PkF)
+[Get Bearer Token](https://imgur.com/FqaasZb)
+[Verify Bearer Token](https://imgur.com/JE8INef)
+[List Metrics](https://imgur.com/49YD4Wa)
+[Get Metrics](https://imgur.com/vB573t7)

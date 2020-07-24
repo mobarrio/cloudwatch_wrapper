@@ -57,10 +57,10 @@ aws_secret_access_key = [SECRET_KEY]
 **Psw:** zabbix
 
 ## Imagenes
-[Login](https://imgur.com/cPtpBKH)
-[Help](https://imgur.com/2lvcW1w)
-[API Help](https://imgur.com/rui2PkF)
-[Get Bearer Token](https://imgur.com/FqaasZb)
-[Verify Bearer Token](https://imgur.com/JE8INef)
-[List Metrics](https://imgur.com/49YD4Wa)
-[Get Metrics](https://imgur.com/vB573t7)
+![Login](https://imgur.com/cPtpBKH.png)
+![Help](https://imgur.com/2lvcW1w.png)
+![API Help](https://imgur.com/rui2PkF.png)
+![Get Bearer Token](https://imgur.com/FqaasZb.png)
+![Verify Bearer Token](https://imgur.com/JE8INef.png)
+![List Metrics](https://imgur.com/49YD4Wa.png)
+![Get Metrics](https://imgur.com/vB573t7.png)

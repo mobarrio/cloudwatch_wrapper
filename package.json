@@ -1,9 +1,9 @@
 {
-  "name": "cloudwatch",
-  "version": "0.0.1",
+  "name": "CloudWatch",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/cloudwatch"
   },
   "dependencies": {
     "aws-sdk": "^2.700.0",

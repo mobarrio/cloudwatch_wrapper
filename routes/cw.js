@@ -91,15 +91,18 @@ function getMetrics(req, res, next) {
       }
     });
 
+// 86400 Seconds. (1 day = 86400 seconds.)
+//--start-time 2016-10-19T00:00:00Z --end-time 2016-10-20T00:00:00Z 
+
     var durationInMinutes = 60;
     var period = durationInMinutes * 60;
     var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
     var EndTime = new Date;
     var StartTime = new Date(EndTime - 15*60*1000);
     var params = {
-        "EndTime": EndTime,
-        "StartTime": StartTime,
-        "Period": period,
+        "EndTime": (typeof metric.EndTime === 'undefined') ? EndTime : metric.EndTime,
+        "StartTime": (typeof metric.StartTime === 'undefined') ? StartTime : metric.StartTime,
+        "Period": (typeof metric.Period === 'undefined') ? period : metric.Period,
         "Namespace": metric.Namespace,
         "MetricName": metric.MetricName,
         "Dimensions": [
@@ -124,10 +127,16 @@ function getMetrics(req, res, next) {
   }
 };
 
+function Dummy(rreq, res, next){
+  res.status(404).json({status: "error", msg: "Ruta no encontrada"});
+  return
+};
+
 router.get('/', getApiHelp);
 router.get('/v1', getApiHelp);
 router.get('/v1/health', getHealthCheck);
 router.get('/v1/aws/listmetrics', ListMetrics);
+router.get('/v1/aws/getmetrics', Dummy);
 router.post('/v1/aws/getmetrics', getMetrics);
 router.get('*', (req, res) => res.status(403).json({
   errorCode: '404',

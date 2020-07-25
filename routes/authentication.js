@@ -35,7 +35,7 @@ function TTLHandler(req, res, next) {
    if(credentials != undefined && (credentials.name === "admin" && credentials.pass === "zabbix")) {
       const payload = { check:  true };
       const token = jwt.sign(payload, req.app.get('privateKey'), { expiresIn: ttl, algorithm: 'RS256' });
-      res.json({ account: account, token: token, ttl: ttl });
+      res.json({data:[ { account: account, token: token, ttl: ttl } ] });
 
    } else {
       res.statusCode = 401;
@@ -56,7 +56,7 @@ function TTLForeverHandler(req, res, next) {
      if(credentials != undefined && (credentials.name === "admin" && credentials.pass === "zabbix")) {
         const payload = { check:  true };
         const token = jwt.sign(payload, req.app.get('privateKey'), { expiresIn: ttl, algorithm: 'RS256' });
-        res.json({ account: account, token: token, ttl: ttl });
+        res.json({ data:[ {account: account, token: token, ttl: ttl }] });
   
      } else {
         res.statusCode = 401;

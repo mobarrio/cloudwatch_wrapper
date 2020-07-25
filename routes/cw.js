@@ -2,22 +2,19 @@ var express = require('express');
 var router = express.Router();
 var AWS = require('aws-sdk');
 var jwt = require('jsonwebtoken');
+var present = require('present');
 
 function getApiHelp(req, res, next) {
     res.render('help', { title: 'Cloudwatch Wrapper', version: 'v1' });   
 };
 
-function getHealthCheck(req, res, next) { 
-  var environment = req.params.env || 'pro';
-  res.json({ status: 'UP' }); 
-};
-
-function ListMetrics(req, res, next) {
-  const account = req.body.Config.Account || 'pro';
-  const region = req.body.Config.Region;
-  const metric = req.body.Metric;
-
+function getHealthCheck(req, res, next) {
   try {
+    const t0 = present();
+    const account = req.body.Config.Account || 'pro';
+    const region = req.body.Config.Region;
+    const metric = req.body.Metric;
+
     var credentials = new AWS.SharedIniFileCredentials({profile: account});
     AWS.config.update({
       region: region,
@@ -27,17 +24,43 @@ function ListMetrics(req, res, next) {
         timeout: 3000 // Inactivity timeout
       }
     });
+
     var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
+    cw.listMetrics(metric, function(err, data) {
+      if (err) {
+        logts("Error", err);
+        res.json({ status: 0, msg: err, responseTime: (present()-t0), unit: "ms" }); 
+      } else {
+        res.json({ status: 1, responseTime: (present()-t0), unit: "ms" }); 
+      }
+    });
+
   } catch (error) {
-    res.status(401).json({status: "error", msg: "Error retrieveing credentials", metric: metric, region: region, account: account});
+    res.status(401).json({status: 0, msg: "Error retrieveing credentials", responseTime: (present()-t0), unit: "ms", metric: metric, region: region, account: account});
     return
   }
+};
+
+function ListMetrics(req, res, next) {
   try {
+    const account = req.body.Config.Account || 'pro';
+    const region = req.body.Config.Region;
+    const metric = req.body.Metric;
+    var credentials = new AWS.SharedIniFileCredentials({profile: account});
+    AWS.config.update({
+      region: region,
+      credentials: credentials,
+      httpOptions: {
+        connectTimeout: 1000, // Syn Timeout
+        timeout: 3000 // Inactivity timeout
+      }
+    });
+
     var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
-    var params = {
-        "Namespace": metric.Namespace,
-        "Dimensions": metric.Dimensions || []
-    };
+    var params = {};
+    params.Namespace = metric.Namespace;
+    if(typeof metric.MetricName === "string") { params.MetricName = metric.MetricName; }
+    params.Dimensions = metric.Dimensions || [];
 
     cw.listMetrics(params, function(err, data) {
       if (err) {
@@ -46,19 +69,18 @@ function ListMetrics(req, res, next) {
         res.send(data);
       }
     });
-  } catch(error){
-    res.status(401).json({status: "error", msg: "Error in parameters", body: metric});
-    return   
+  } catch (error) {
+    res.status(401).json({status: "error", msg: "Error retrieveing credentials", metric: metric, region: region, account: account});
+    return
   }
-
 };
 
 function getMetrics(req, res, next) {
-  const account = req.body.Config.Account || 'pro';
-  const region = req.body.Config.Region;
-  const metric = req.body.Metric;
-
   try {
+    const account = req.body.Config.Account || 'pro';
+    const region = req.body.Config.Region;
+    const metric = req.body.Metric;
+
     var credentials = new AWS.SharedIniFileCredentials({profile: account});
     AWS.config.update({
       region: region,
@@ -68,14 +90,7 @@ function getMetrics(req, res, next) {
         timeout: 3000 // Inactivity timeout
       }
     });
-    var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
 
-  } catch (error) {
-    res.status(401).json({status: "error", msg: "Error retrieveing credentials"});
-    return
-  }
-
-  try {
     var durationInMinutes = 60;
     var period = durationInMinutes * 60;
     var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
@@ -103,9 +118,9 @@ function getMetrics(req, res, next) {
             res.send(data.Datapoints[0] || {"status": "error", "msg":"No hay metricas para este objeto.\nVerifique los parametros que esta enviando en el Body.", "body": metric});
         }
     });
-  } catch(error){
-    res.status(401).json({status: "error", msg: "Error in parameters", body: metric});
-    return   
+  } catch (error) {
+    res.status(401).json({status: "error", msg: "Error retrieveing credentials"});
+    return
   }
 };
 

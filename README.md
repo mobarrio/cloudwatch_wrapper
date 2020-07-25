@@ -1,6 +1,8 @@
 # cloudwatch_wrapper
 Repositorio para realizar consultas a Cloudwatch via API REST utilizando AWS-SDK + NodeJS
+El objetivo es que mediante una llamada HTTP podamos extraer datos de CloudWatch sin la necesidad de instalar paqueteria adisional en nuestro servidor de Zabbix.
 
+![Esquema de conexion](https://i.imgur.com/APbQZ7e.png)
 
 ## Instalacion de Docker-Compose
 ```

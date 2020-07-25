@@ -19,6 +19,14 @@ global.logts = function(msg){
    debug && console.log(ts,msg)
  };
 
+Array.prototype.findReg = function(match) {
+   var reg = new RegExp(match);
+
+   return this.filter(function(item){
+       return typeof item == 'string' && item.match(reg);
+   });
+}
+
 console.log(figlet.textSync('  '+pkgname+' - '+pkgversion));
 console.log("------------------------------------------------------------------------------------------------");
 var indexRouter  = require('./routes/index');
@@ -68,7 +76,8 @@ app.use(function(req, res, next) {
 
 app.use(function(req, res, next) {
    logts('Middleware de autenticaicon Bearer');
-   if (conf.auth.exclude.includes(req.url.valueOf())) {
+   logts(req.url.valueOf());
+   if (conf.auth.exclude.findReg(req.url.valueOf())) {
       logts('Endpoint excluido de autenticacion.');
       return next();
    }else{

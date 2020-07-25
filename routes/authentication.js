@@ -29,13 +29,13 @@ function VerifyHandler(req, res, next) {
 
 function TTLHandler(req, res, next) {
  try {
-   var credentials = auth(req);
-   var ttl = req.params.ttl || '1h';
-
+   const credentials = auth(req);
+   const ttl = '1h';
+   var account = ((typeof req.params.account === 'undefined') ? ((typeof req.body.Config === 'undefined' || typeof req.body.Config.Account === 'undefined' || req.body.Config.Account === "") ? 'pro' : req.body.Config.Account) : req.params.account);
    if(credentials != undefined && (credentials.name === "admin" && credentials.pass === "zabbix")) {
       const payload = { check:  true };
       const token = jwt.sign(payload, req.app.get('privateKey'), { expiresIn: ttl, algorithm: 'RS256' });
-      res.json({ msg: 'Authentication ok', token: token });
+      res.json({ account: account, token: token, ttl: ttl });
 
    } else {
       res.statusCode = 401;
@@ -50,12 +50,13 @@ function TTLHandler(req, res, next) {
 function TTLForeverHandler(req, res, next) {
    try {
      var credentials = auth(req);
-     var ttl = '100y';
-  
+     var ttl = req.params.ttl || '100y';
+     var account = ((typeof req.params.account === 'undefined') ? ((typeof req.body.Config === 'undefined' || typeof req.body.Config.Account === 'undefined' || req.body.Config.Account === "") ? 'pro' : req.body.Config.Account) : req.params.account);
+ 
      if(credentials != undefined && (credentials.name === "admin" && credentials.pass === "zabbix")) {
         const payload = { check:  true };
         const token = jwt.sign(payload, req.app.get('privateKey'), { expiresIn: ttl, algorithm: 'RS256' });
-        res.json({ msg: 'Authentication ok', token: token });
+        res.json({ account: account, token: token, ttl: ttl });
   
      } else {
         res.statusCode = 401;
@@ -75,6 +76,8 @@ function LoginHandler(req, res, next) {
 router.get('/', LoginHandler);
 router.post('/verify', VerifyHandler);
 router.post('/get/credentials', TTLHandler);
-router.post('/get/credentials/forever', TTLForeverHandler);
+router.post('/get/credentials/:account', TTLHandler);
+router.post('/get/credentials/:account/ttl', TTLForeverHandler);
+router.post('/get/credentials/:account/ttl/:ttl', TTLForeverHandler);
 
 module.exports = router;

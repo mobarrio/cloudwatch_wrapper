@@ -6,7 +6,7 @@ let get = {
         scopes: {
             basic: 'monitoring',
         },
-        exclude: ['/', '/about', '/health', '/api/v1','/api/v1/health', '/auth', '/auth/get/credentials', '/auth/get/credentials/forever' ]
+        exclude: ['/', '/about', '/health', '/api/v1','/api/v1/health', '/auth', '/auth/get/credentials' ]
     }
 };
 

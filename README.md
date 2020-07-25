@@ -53,13 +53,37 @@ aws_secret_access_key = [SECRET_KEY]
 
 
 ## Usuarios y Password
-**Usr:** admin
-**Psw:** zabbix
+```
+Usr admin
+Psw zabbix
+```
+
+## Zabbix Demo Template
+# Template Macros
+```
+{$BASICTOKEN}  - Token Basic para poder conectarnos a la API
+{$REGION}      - Region de AWS
+{$API_SERVER}  - IP y puerto en que escucha la API. Ej. http://10.1.2.100:3000
+```
+
+# LLD macros
+```
+{#ACCOUNT}    - Tipo de cuenta a la que estamos conectados.
+{#TOKEN}      - Bearer token para poder conectarnos a la API y recolectar metricas.
+{#TTL}        - TTL del Bearer token.
+```
+
+# Hosts Macros
+```
+{$REDISDBNAME} - ElastiCache DBName solo pare los ejemplos de monitorizacion de ElastiCache.
+```
 
 ## Video
 ![CloudWatch](https://user-images.githubusercontent.com/1693682/88439546-cb5c3000-ce0b-11ea-88ad-36d5fd3c7e7b.gif)
 
 ## Imagenes
+![Zabbix Latest Data](https://i.imgur.com/Ocp3AJI.png)
+
 ![Login](https://imgur.com/cPtpBKH.png)
 ![Help](https://imgur.com/2lvcW1w.png)
 ![API Help](https://imgur.com/rui2PkF.png)

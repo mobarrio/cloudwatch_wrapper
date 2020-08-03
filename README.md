@@ -91,6 +91,6 @@ Psw zabbix
 ![API Help](https://imgur.com/rui2PkF.png)
 ![Get Bearer Token](https://imgur.com/FqaasZb.png)
 ![Verify Bearer Token](https://imgur.com/JE8INef.png)
-![List Metrics](https://imgur.com/49YD4Wa.png)
+![List Metrics](https://imgur.com/GM1pO2L.png)
 ![Get Metrics](https://imgur.com/vB573t7.png)
 

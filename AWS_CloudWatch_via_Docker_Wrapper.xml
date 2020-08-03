@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.0</version>
-    <date>2020-07-25T14:35:15Z</date>
+    <date>2020-08-03T16:16:55Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -9,9 +9,9 @@
     </groups>
     <templates>
         <template>
-            <template>AWS CloudWatch</template>
-            <name>AWS CloudWatch</name>
-            <description>Monitorizacion via CloudWatch</description>
+            <template>AWS CloudWatch via Docker Wrapper</template>
+            <name>AWS CloudWatch via Docker Wrapper</name>
+            <description>Monitorizacion de AWS via CloudWatch utilizando un Wrapper desarrollado en NodeJS.</description>
             <groups>
                 <group>
                     <name>Templates</name>
@@ -29,6 +29,7 @@
                             <name>EC2 CPUUtilization</name>
                             <type>HTTP_AGENT</type>
                             <key>get.ec2.CPUUtilization[{#ACCOUNT}]</key>
+                            <delay>5m</delay>
                             <value_type>FLOAT</value_type>
                             <units>%</units>
                             <description>The percentage of CPU utilization.&#13;
@@ -40,7 +41,7 @@ Units: Percent</description>
                                     <params>$.Average</params>
                                 </step>
                             </preprocessing>
-                            <url>http://10.1.2.100:3000/api/v1/aws/getmetrics</url>
+                            <url>{$API_SERVER}/api/v1/aws/getmetrics</url>
                             <posts>{&#13;
     &quot;Config&quot;: {&#13;
         &quot;Account&quot;: &quot;{#ACCOUNT}&quot;,&#13;
@@ -72,6 +73,7 @@ Units: Percent</description>
                             <name>ElastiCache CacheHitRate</name>
                             <type>HTTP_AGENT</type>
                             <key>get.ElastiCache.CacheHitRate[{#ACCOUNT}]</key>
+                            <delay>5m</delay>
                             <description>The number of unsuccessful read-only key lookups in the main dictionary. This is derived fromkeyspace_misses statistic at Redis INFO.</description>
                             <preprocessing>
                                 <step>
@@ -79,7 +81,7 @@ Units: Percent</description>
                                     <params>$.Average</params>
                                 </step>
                             </preprocessing>
-                            <url>http://10.1.2.100:3000/api/v1/aws/getmetrics</url>
+                            <url>{$API_SERVER}/api/v1/aws/getmetrics</url>
                             <posts>{&#13;
     &quot;Config&quot;: {&#13;
         &quot;Account&quot;: &quot;{#ACCOUNT}&quot;,&#13;
@@ -111,6 +113,7 @@ Units: Percent</description>
                             <name>ElastiCache CPUUtilization</name>
                             <type>HTTP_AGENT</type>
                             <key>get.ElastiCache.CPUUtilization[{#ACCOUNT}]</key>
+                            <delay>5m</delay>
                             <value_type>FLOAT</value_type>
                             <units>%</units>
                             <description>The percentage of CPU utilization for the entire host. Because Redis is single-threaded, we recommend you monitor EngineCPUUtilization metric for nodes with 4 or more vCPUs.</description>
@@ -120,7 +123,7 @@ Units: Percent</description>
                                     <params>$.Average</params>
                                 </step>
                             </preprocessing>
-                            <url>http://10.1.2.100:3000/api/v1/aws/getmetrics</url>
+                            <url>{$API_SERVER}/api/v1/aws/getmetrics</url>
                             <posts>{&#13;
     &quot;Config&quot;: {&#13;
         &quot;Account&quot;: &quot;{#ACCOUNT}&quot;,&#13;
@@ -152,6 +155,7 @@ Units: Percent</description>
                             <name>ElastiCache CurrConnections</name>
                             <type>HTTP_AGENT</type>
                             <key>get.ElastiCache.CurrConnections[{#ACCOUNT}]</key>
+                            <delay>5m</delay>
                             <value_type>FLOAT</value_type>
                             <description>The number of client connections, excluding connections from read replicas. ElastiCache uses two to four of the connections to monitor the cluster in each case. This is derived from the connected_clients statistic at Redis INFO.</description>
                             <preprocessing>
@@ -160,7 +164,7 @@ Units: Percent</description>
                                     <params>$.Average</params>
                                 </step>
                             </preprocessing>
-                            <url>http://10.1.2.100:3000/api/v1/aws/getmetrics</url>
+                            <url>{$API_SERVER}/api/v1/aws/getmetrics</url>
                             <posts>{&#13;
     &quot;Config&quot;: {&#13;
         &quot;Account&quot;: &quot;{#ACCOUNT}&quot;,&#13;
@@ -192,6 +196,7 @@ Units: Percent</description>
                             <name>ElastiCache SwapUsage</name>
                             <type>HTTP_AGENT</type>
                             <key>get.ElastiCache.SwapUsage[{#ACCOUNT}]</key>
+                            <delay>5m</delay>
                             <value_type>FLOAT</value_type>
                             <units>b</units>
                             <description>The amount of swap used on the host.</description>
@@ -201,7 +206,7 @@ Units: Percent</description>
                                     <params>$.Average</params>
                                 </step>
                             </preprocessing>
-                            <url>http://10.1.2.100:3000/api/v1/aws/getmetrics</url>
+                            <url>{$API_SERVER}/api/v1/aws/getmetrics</url>
                             <posts>{&#13;
     &quot;Config&quot;: {&#13;
         &quot;Account&quot;: &quot;{#ACCOUNT}&quot;,&#13;
@@ -233,6 +238,7 @@ Units: Percent</description>
                             <name>RDS CPUUtilization</name>
                             <type>HTTP_AGENT</type>
                             <key>get.rds.CPUUtilization[{#ACCOUNT}]</key>
+                            <delay>5m</delay>
                             <value_type>FLOAT</value_type>
                             <units>%</units>
                             <description>The percentage of CPU utilization.&#13;
@@ -244,7 +250,7 @@ Units: Percent</description>
                                     <params>$.Average</params>
                                 </step>
                             </preprocessing>
-                            <url>http://10.1.2.100:3000/api/v1/aws/getmetrics</url>
+                            <url>{$API_SERVER}/api/v1/aws/getmetrics</url>
                             <posts>{&#13;
     &quot;Config&quot;: {&#13;
         &quot;Account&quot;: &quot;{#ACCOUNT}&quot;,&#13;
@@ -276,6 +282,7 @@ Units: Percent</description>
                             <name>RDS DatabaseConnections</name>
                             <type>HTTP_AGENT</type>
                             <key>get.rds.DatabaseConnections[{#ACCOUNT}]</key>
+                            <delay>5m</delay>
                             <description>The number of database connections in use.&#13;
 &#13;
 The metric value might not include broken database connections that haven't been cleaned up by your database yet. So, the number of database connections recorded by your database might be higher than the metric value.&#13;
@@ -287,7 +294,7 @@ Units: Count</description>
                                     <params>$.Average</params>
                                 </step>
                             </preprocessing>
-                            <url>http://10.1.2.100:3000/api/v1/aws/getmetrics</url>
+                            <url>{$API_SERVER}/api/v1/aws/getmetrics</url>
                             <posts>{&#13;
     &quot;Config&quot;: {&#13;
         &quot;Account&quot;: &quot;{#ACCOUNT}&quot;,&#13;
@@ -319,6 +326,7 @@ Units: Count</description>
                             <name>RDS FreeableMemory</name>
                             <type>HTTP_AGENT</type>
                             <key>get.rds.FreeableMemory[{#ACCOUNT}]</key>
+                            <delay>5m</delay>
                             <value_type>FLOAT</value_type>
                             <units>b</units>
                             <description>&quot;The amount of available random access memory.&#13;
@@ -332,7 +340,7 @@ Units: Bytes&quot;</description>
                                     <params>$.Average</params>
                                 </step>
                             </preprocessing>
-                            <url>http://10.1.2.100:3000/api/v1/aws/getmetrics</url>
+                            <url>{$API_SERVER}/api/v1/aws/getmetrics</url>
                             <posts>{&#13;
     &quot;Config&quot;: {&#13;
         &quot;Account&quot;: &quot;{#ACCOUNT}&quot;,&#13;
@@ -364,6 +372,7 @@ Units: Bytes&quot;</description>
                             <name>RDS FreeStorageSpace</name>
                             <type>HTTP_AGENT</type>
                             <key>get.rds.FreeStorageSpace[{#ACCOUNT}]</key>
+                            <delay>5m</delay>
                             <value_type>FLOAT</value_type>
                             <units>b</units>
                             <description>&quot;The amount of available storage space.&#13;
@@ -375,7 +384,7 @@ Units: Bytes&quot;</description>
                                     <params>$.Average</params>
                                 </step>
                             </preprocessing>
-                            <url>http://10.1.2.100:3000/api/v1/aws/getmetrics</url>
+                            <url>{$API_SERVER}/api/v1/aws/getmetrics</url>
                             <posts>{&#13;
     &quot;Config&quot;: {&#13;
         &quot;Account&quot;: &quot;{#ACCOUNT}&quot;,&#13;
@@ -410,7 +419,7 @@ Units: Bytes&quot;</description>
                             <delay>1d</delay>
                             <trends>0</trends>
                             <value_type>TEXT</value_type>
-                            <url>http://10.1.2.100:3000/api/v1/aws/listmetrics</url>
+                            <url>{$API_SERVER}/api/v1/aws/listmetrics</url>
                             <posts>{&#13;
     &quot;Config&quot;: {&#13;
         &quot;Account&quot;: &quot;{#ACCOUNT}&quot;,&#13;
@@ -437,6 +446,7 @@ Units: Bytes&quot;</description>
                             <name>RDS SwapUsage</name>
                             <type>HTTP_AGENT</type>
                             <key>get.rds.SwapUsage[{#ACCOUNT}]</key>
+                            <delay>5m</delay>
                             <value_type>FLOAT</value_type>
                             <units>b</units>
                             <description>&quot;The amount of swap space used on the DB instance. This metric is not available for SQL Server.&#13;
@@ -448,7 +458,7 @@ Units: Bytes&quot;</description>
                                     <params>$.Average</params>
                                 </step>
                             </preprocessing>
-                            <url>http://10.1.2.100:3000/api/v1/aws/getmetrics</url>
+                            <url>{$API_SERVER}/api/v1/aws/getmetrics</url>
                             <posts>{&#13;
     &quot;Config&quot;: {&#13;
         &quot;Account&quot;: &quot;{#ACCOUNT}&quot;,&#13;
@@ -478,7 +488,7 @@ Units: Bytes&quot;</description>
                         </item_prototype>
                     </item_prototypes>
                     <timeout>10s</timeout>
-                    <url>http://10.1.2.100:3000/auth/get/credentials</url>
+                    <url>{$API_SERVER}/auth/get/credentials</url>
                     <headers>
                         <header>
                             <name>Authorization</name>
@@ -512,13 +522,14 @@ Units: Bytes&quot;</description>
             </discovery_rules>
             <macros>
                 <macro>
+                    <macro>{$API_SERVER}</macro>
+                    <value>http://10.1.2.100:3000</value>
+                    <description>IP y Puerto en que escucha la API</description>
+                </macro>
+                <macro>
                     <macro>{$BASICTOKEN}</macro>
                     <value>YWRtaW46emFiYml4</value>
                     <description>Usr: admin Psw: zabbix</description>
-                </macro>
-                <macro>
-                    <macro>{$REDISDBNAME}</macro>
-                    <description>DBName</description>
                 </macro>
                 <macro>
                     <macro>{$REGION}</macro>

@@ -10,38 +10,93 @@ block content
      table(class="table")
         thead(class="thead-dark")
            tr
-              th(scope="col") METHOD
-              th(scope="col") ENDPOINT
-              th(scope="col") DESC
-              th(scope="col") HEADER
+               th(scope="col") METHOD
+               th(scope="col") ENDPOINT
+               th(scope="col") DESC
+               th(scope="col") HEADER
         tbody
            tr
-              td(scope="row") GET
-              td /health
-              td <b>Healthcheck</b>
-              td 
+               td(scope="row") GET
+               td /health
+               td <b>Healthcheck</b>
+               td 
            tr
-              td(scope="row") GET
-              td /auth
-              td <b>Listado de Endpoints</b>
-              td Authorization: Basic [Credenciales codificadas en base64 - Username: admin Password: zabbix]
+               td(scope="row") GET
+               td /auth
+               td <b>Listado de Endpoints</b>
+               td Authorization: Basic [Credenciales codificadas en base64 - Username: admin Password: zabbix]
            tr
-              td(scope="row") POST
-              td /auth/get/credentials
-              td <b>Genera un nuevo Token con el TTL de 1h</b>
-              td Authorization: Basic [Credenciales codificadas en base64 - Username: admin Password: zabbix]
+               td(scope="row") POST
+               td /auth/get/credentials
+               td <b>Genera un nuevo Token con el TTL de 1h</b>
+                  div(style='text-align: left;font-size: 12px;color: red;')
+                     br
+                     | <b>Response</b>
+                     pre.
+                       {
+                           "data": [
+                               {
+                                   "account": "pro",
+                                   "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGVjayI6dHJ1ZSwiaWF0IjoxNTk2NTYzOTEwLCJleHAiOjE1OTY1Njc1MTB9.k-eT2lyMPMQMXyfPdZNiFE742O-A31Ebj2IcZGzOWc4EBQbZI_vNqHvLq6vMsVwsv7wYo-Y2e1Nyt42j_pmALYwlUUZVnb4Lz3exT2UWCv3HR80p_9vJEpgolxcjdPpaBJuolgJT9GKAe94GQYPc9zS8-SAZJCIiug7eh5RBB7t-ZesubDPQ7LOMK91NrRU7gG06Gcux7Fje3LOveQMM4cyIUcNvEUTvTUTzsMUTk3MA8hTcC6-NXWIZFvo27apxlKuIjC1mMyD-2M0lR9eemWYY8dgjkRg8TTO6nBuU9CYHW2bp3DsRPrjZdiIkPjHw5FV-to_PBgg1cUweX1KVEZj0P4NXqAaBKs8_qi3od074XvnnYKzEv8coAg6ZU_8dDpY9_bXNN0Qba69fsx0aaTbHWqHWDbL4x8VbIdL-wBVcfu_4h46UVag22IDxN1Xv7ZAIAqVQ5iIri4pMS9zxOqRAJyz1Yg0ceJ6z0WIOXTbG1GBMo_G6-2v57xd4rTKPDeDck0plyMEo-vxAXTPhQtMXgwNVNx6AlivzeluXoT-uU-HsTnAZPcEk5NdLVBFGfGsdFMTE3caGzJtU7a7En-XjOihVYKHUHElzzphKYLPjrs8FWrsVZgEoh0i7yczSywY_0ZWzpxv3v-0l9-QZSDdVd-PBUnd1qzJOxbhNMYs",
+                                   "ttl": "1h"
+                               }
+                           ]
+                       }   
+               td Authorization: Basic [Credenciales codificadas en base64 - Username: admin Password: zabbix]
            tr
-              td(scope="row") POST
-              td /auth/get/credentials/forever
-              td <b>Genera un nuevo Token con el TTL de 100 años</b>
-              td Authorization: Basic [Credenciales codificadas en base64 - Username: admin Password: zabbix]
+               td(scope="row") POST
+               td /auth/get/credentials/ttl
+               td <b>Genera un nuevo Token con el TTL de 100 años</b>
+                  div(style='text-align: left;font-size: 12px;color: red;')
+                     br
+                     | <b>Response</b>
+                     pre.
+                       {
+                           "data": [
+                               {
+                                   "account": "pro",
+                                   "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGVjayI6dHJ1ZSwiaWF0IjoxNTk2NTYzOTEwLCJleHAiOjE1OTY1Njc1MTB9.k-eT2lyMPMQMXyfPdZNiFE742O-A31Ebj2IcZGzOWc4EBQbZI_vNqHvLq6vMsVwsv7wYo-Y2e1Nyt42j_pmALYwlUUZVnb4Lz3exT2UWCv3HR80p_9vJEpgolxcjdPpaBJuolgJT9GKAe94GQYPc9zS8-SAZJCIiug7eh5RBB7t-ZesubDPQ7LOMK91NrRU7gG06Gcux7Fje3LOveQMM4cyIUcNvEUTvTUTzsMUTk3MA8hTcC6-NXWIZFvo27apxlKuIjC1mMyD-2M0lR9eemWYY8dgjkRg8TTO6nBuU9CYHW2bp3DsRPrjZdiIkPjHw5FV-to_PBgg1cUweX1KVEZj0P4NXqAaBKs8_qi3od074XvnnYKzEv8coAg6ZU_8dDpY9_bXNN0Qba69fsx0aaTbHWqHWDbL4x8VbIdL-wBVcfu_4h46UVag22IDxN1Xv7ZAIAqVQ5iIri4pMS9zxOqRAJyz1Yg0ceJ6z0WIOXTbG1GBMo_G6-2v57xd4rTKPDeDck0plyMEo-vxAXTPhQtMXgwNVNx6AlivzeluXoT-uU-HsTnAZPcEk5NdLVBFGfGsdFMTE3caGzJtU7a7En-XjOihVYKHUHElzzphKYLPjrs8FWrsVZgEoh0i7yczSywY_0ZWzpxv3v-0l9-QZSDdVd-PBUnd1qzJOxbhNMYs",
+                                   "ttl": "100y"
+                               }
+                           ]
+                       }   
+               td Authorization: Basic [Credenciales codificadas en base64 - Username: admin Password: zabbix]
            tr
-              td(scope="row") POST
-              td /auth/verify
-              td <b>Verifica la caducidad del Token</b>
-              td Authorization: Bearer [Token]
+               td(scope="row") POST
+               td /auth/get/credentials/ttl/[TIME]
+               td <b>TIME: Tiempo de expitacion del token (s,m,h,d,y)</b>
+                 div(style='text-align: left;font-size: 12px;color: red;')
+                     br
+                     | <b>Response</b>
+                     pre.
+                       {
+                           "data": [
+                               {
+                                   "account": "pro",
+                                   "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGVjayI6dHJ1ZSwiaWF0IjoxNTk2NTYzOTEwLCJleHAiOjE1OTY1Njc1MTB9.k-eT2lyMPMQMXyfPdZNiFE742O-A31Ebj2IcZGzOWc4EBQbZI_vNqHvLq6vMsVwsv7wYo-Y2e1Nyt42j_pmALYwlUUZVnb4Lz3exT2UWCv3HR80p_9vJEpgolxcjdPpaBJuolgJT9GKAe94GQYPc9zS8-SAZJCIiug7eh5RBB7t-ZesubDPQ7LOMK91NrRU7gG06Gcux7Fje3LOveQMM4cyIUcNvEUTvTUTzsMUTk3MA8hTcC6-NXWIZFvo27apxlKuIjC1mMyD-2M0lR9eemWYY8dgjkRg8TTO6nBuU9CYHW2bp3DsRPrjZdiIkPjHw5FV-to_PBgg1cUweX1KVEZj0P4NXqAaBKs8_qi3od074XvnnYKzEv8coAg6ZU_8dDpY9_bXNN0Qba69fsx0aaTbHWqHWDbL4x8VbIdL-wBVcfu_4h46UVag22IDxN1Xv7ZAIAqVQ5iIri4pMS9zxOqRAJyz1Yg0ceJ6z0WIOXTbG1GBMo_G6-2v57xd4rTKPDeDck0plyMEo-vxAXTPhQtMXgwNVNx6AlivzeluXoT-uU-HsTnAZPcEk5NdLVBFGfGsdFMTE3caGzJtU7a7En-XjOihVYKHUHElzzphKYLPjrs8FWrsVZgEoh0i7yczSywY_0ZWzpxv3v-0l9-QZSDdVd-PBUnd1qzJOxbhNMYs",
+                                   "ttl": "48h"
+                               }
+                           ]
+                       }   
+               td Authorization: Basic [Credenciales codificadas en base64 - Username: admin Password: zabbix]
            tr
-              td(scope="row") GET
-              td /api/v1
-              td <b>Listado de Endpoints disponibles</b>
-              td Authorization: Bearer [Token]
+               td(scope="row") POST
+               td /auth/verify
+               td <b>Verifica la caducidad del Token</b>
+                  div(style='text-align: left;font-size: 12px;color: red;')
+                     br
+                     | <b>Response</b>
+                     pre.
+                         {
+                            "msg": {
+                                "check": true,
+                                "iat": "04/08/2020 20:00:26",
+                                "exp": "05/08/2120 20:00:26"
+                            }
+                        }               
+               td Authorization: Bearer [Token]
+           tr
+               td(scope="row") GET
+               td /api/v1
+               td <b>Listado de Endpoints disponibles</b>
+               td Authorization: Bearer [Token]

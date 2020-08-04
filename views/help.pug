@@ -31,16 +31,11 @@ block content
                td <b>Healthcheck de la API</b>
                td Authorization: Bearer [Token]
             tr
-               td(scope="row") POST
-               td /api/v1/get/btoken
-               td <b>Recupera el Bearer Token</b>
-               td Authorization: Basic [Token]
-            tr
                td(scope="row") GET
                td /api/v1/aws/listmetrics
                   div(style='text-align: left;font-size: 12px;color: red;')
                      br
-                     | <b>Pasar en el Body</b>
+                     | <b>Request</b>
                      pre.
                        {
                           "Config": {
@@ -58,7 +53,7 @@ block content
                td /api/v1/aws/getmetrics
                   div(style='text-align: left;font-size: 12px;color: red;')
                      br
-                     | <b>Pasar en el Body</b>
+                     | <b>Request</b>
                      pre.
                         {
                             "Config": {
@@ -77,5 +72,16 @@ block content
                                 "Statistics": ["SampleCount", "Average", "Sum", "Minimum", "Maximum"]
                             }
                         }
+                     | <b>Response</b>
+                     pre.
+                        {
+                            "Timestamp": "2020-08-04T17:50:00.000Z",
+                            "SampleCount": 14,
+                            "Average": 1.9165128540986849,
+                            "Sum": 26.83117995738159,
+                            "Minimum": 1.75000000000485,
+                            "Maximum": 2.5,
+                            "Unit": "Percent"
+                        }                        
                td <b>Listrar el valor de la metrica solicitada (Short Method)</b>
                td Authorization: Bearer [Token]

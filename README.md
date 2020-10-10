@@ -35,6 +35,12 @@ aws_secret_access_key = [SECRET_KEY]
 ```
 
 
+## Descargar la imagen de DockerHub
+```
+docker pull mobarrio/cloudwatch_wrapper
+```
+
+
 ## Compilar y arrancar el contenedor
 ```
 # docker-compose build

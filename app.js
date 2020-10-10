@@ -11,7 +11,7 @@ const figlet  = require('figlet');
 const auth = require('basic-auth');
 const conf = require('./config/config');
 const pkgname = process.env.npm_package_name || "CloudWatch";
-const pkgversion = process.env.npm_package_version || "x.x.x";
+const pkgversion = require('./package.json').version;
 const debug = false; // Set true para ver debug por consola.
 
 global.logts = function(msg){

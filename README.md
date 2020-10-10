@@ -35,16 +35,15 @@ aws_secret_access_key = [SECRET_KEY]
 ```
 
 
-## Descargar la imagen de DockerHub
+## Utilizar la imagen de Dockerhub
 ```
-docker pull mobarrio/cloudwatch_wrapper
-```
-
-
-## Compilar y arrancar el contenedor
-```
-# docker-compose build
 # docker-compose up -d
+```
+
+
+## Compilar  y arrancar el contenedor
+```
+# docker-compose -f docker-compose.build.yml up -d
 ```
 
 
@@ -52,8 +51,9 @@ docker pull mobarrio/cloudwatch_wrapper
 ```
 # docker-compose down
 
-
 ```
+
+
 ## Generar clave RSA 256
 ```
 # ssh-keygen -t rsa -b 4096 -m PEM -f config/jwtRS256.key

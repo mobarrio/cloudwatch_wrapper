@@ -2,6 +2,7 @@ version: '3'
 services:
   wrapper:
     image: mobarrio/cloudwatch_wrapper:latest
+    container_name: cloudwatch_wrapper
     ports:
       - "3000:3000"
     environment:

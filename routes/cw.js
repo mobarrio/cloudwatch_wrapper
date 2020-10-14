@@ -91,8 +91,8 @@ function getMetrics(req, res, next) {
       }
     });
 
-// 86400 Seconds. (1 day = 86400 seconds.)
-//--start-time 2016-10-19T00:00:00Z --end-time 2016-10-20T00:00:00Z 
+    // 86400 Seconds. (1 day = 86400 seconds.)
+    //--start-time 2016-10-19T00:00:00Z --end-time 2016-10-20T00:00:00Z 
 
     var durationInMinutes = 60;
     var period = durationInMinutes * 60;
@@ -105,12 +105,7 @@ function getMetrics(req, res, next) {
         "Period": (typeof metric.Period === 'undefined') ? period : metric.Period,
         "Namespace": metric.Namespace,
         "MetricName": metric.MetricName,
-        "Dimensions": [
-            {
-                "Name": metric.Dimensions[0].Name,
-                "Value": metric.Dimensions[0].Value
-            }
-        ], 
+        "Dimensions": metric.Dimensions,
         "Statistics": metric.Statistics || ['SampleCount', 'Average', 'Sum', 'Minimum', 'Maximum'],
     };
 
@@ -118,7 +113,11 @@ function getMetrics(req, res, next) {
         if (err) {
           logts("Error", err);
         } else {
-            res.send(data.Datapoints[0] || {"status": "error", "msg":"No hay metricas para este objeto.\nVerifique los parametros que esta enviando en el Body.", "body": metric});
+            if(data.Datapoints.length > 1)
+               res.send(data.Datapoints || {"status": "error", "msg":"No hay metricas para este objeto.\nVerifique los parametros que esta enviando en el Body.", "body": metric});
+            else
+               res.send(data.Datapoints[0] || {"status": "error", "msg":"No hay metricas para este objeto.\nVerifique los parametros que esta enviando en el Body.", "body": metric});
+               
         }
     });
   } catch (error) {

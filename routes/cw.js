@@ -95,7 +95,7 @@ function getMetrics(req, res, next) {
     //--start-time 2016-10-19T00:00:00Z --end-time 2016-10-20T00:00:00Z 
 
     var durationInMinutes = 60;
-    var period = durationInMinutes * 60;
+    var period = metric.Period || durationInMinutes * 60;
     var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
     var EndTime = new Date;
     var StartTime = new Date(EndTime - 15*60*1000);
@@ -114,9 +114,9 @@ function getMetrics(req, res, next) {
           logts("Error", err);
         } else {
             if(data.Datapoints.length > 1)
-               res.send(data.Datapoints || {"status": "error", "msg":"No hay metricas para este objeto.\nVerifique los parametros que esta enviando en el Body.", "body": metric});
+               res.send(data.Datapoints || {"status": "error", "msg":"No hay metricas para este objeto.\n", "metric": metric, "data": data});
             else
-               res.send(data.Datapoints[0] || {"status": "error", "msg":"No hay metricas para este objeto.\nVerifique los parametros que esta enviando en el Body.", "body": metric});
+               res.send(data.Datapoints[0] || {"status": "error", "msg":"No hay metricas para este objeto.\n", "metric": metric, "data": data});
                
         }
     });

@@ -14,9 +14,20 @@ const pkgname = process.env.npm_package_name || "CloudWatch";
 const pkgversion = require('./package.json').version;
 const debug = false; // Set true para ver debug por consola.
 
-global.logts = function(msg){
+global.logts = function(msg, err){
    let ts = moment(new Date()).format('DD/MM/YYYY HH:mm:ss.SSS - ')
-   debug && console.log(ts,msg)
+   err = err || "";
+   if(debug){
+      console.log(ts, msg, err);
+
+      /*
+      if(typeof(msg) === 'object') console.dir(msg, {depth: null, colors: true, maxArrayLength: null});
+      else debug && console.log(ts + msg);
+
+      if(typeof(err) === 'object') console.dir(err, {depth: null, colors: true, maxArrayLength: null});
+      else debug && console.log(ts + err);
+      */
+   }
  };
 
 Array.prototype.findReg = function(match) {

@@ -14,8 +14,13 @@ function getHealthCheck(req, res, next) {
     const account = req.body.Config.Account || 'pro';
     const region = req.body.Config.Region;
     const metric = req.body.Metric;
-
     var credentials = new AWS.SharedIniFileCredentials({profile: account});
+
+    logts("Account: ", account);
+    logts("Region: ", region);
+    logts("Credentials: ",  credentials);
+    logts("Metric: " , metric);
+
     AWS.config.update({
       region: region,
       credentials: credentials,
@@ -28,7 +33,7 @@ function getHealthCheck(req, res, next) {
     var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
     cw.listMetrics(metric, function(err, data) {
       if (err) {
-        logts("Error", err);
+        logts("Error: ", err);
         res.json({ status: 0, msg: err, responseTime: (present()-t0), unit: "ms" }); 
       } else {
         res.json({ status: 1, responseTime: (present()-t0), unit: "ms" }); 
@@ -47,6 +52,11 @@ function ListMetrics(req, res, next) {
     const region = req.body.Config.Region;
     const metric = req.body.Metric;
     var credentials = new AWS.SharedIniFileCredentials({profile: account});
+
+    logts("Account: ", account);
+    logts("Region: ", region);
+    logts("Credentials: ",  credentials);
+
     AWS.config.update({
       region: region,
       credentials: credentials,
@@ -62,11 +72,14 @@ function ListMetrics(req, res, next) {
     if(typeof metric.MetricName === "string") { params.MetricName = metric.MetricName; }
     params.Dimensions = metric.Dimensions || [];
 
+    logts("listMetrics: " , params);
+
     cw.listMetrics(params, function(err, data) {
       if (err) {
-        logts("Error", err);
+        logts("Error: ", err);
       } else {
         res.send(data);
+        logts("Resp: ", data);
       }
     });
   } catch (error) {
@@ -80,8 +93,12 @@ function getMetrics(req, res, next) {
     const account = req.body.Config.Account || 'pro';
     const region = req.body.Config.Region;
     const metric = req.body.Metric;
-
     var credentials = new AWS.SharedIniFileCredentials({profile: account});
+
+    logts("Account: ", account);
+    logts("Region: ", region);
+    logts("Credentials: ",  credentials);
+
     AWS.config.update({
       region: region,
       credentials: credentials,
@@ -109,14 +126,19 @@ function getMetrics(req, res, next) {
         "Statistics": metric.Statistics || ['SampleCount', 'Average', 'Sum', 'Minimum', 'Maximum'],
     };
 
+    logts("getMetricStatistics: " , params);
+
     cw.getMetricStatistics(params, function (err, data) {
         if (err) {
-          logts("Error", err);
+          logts("Error: ", err);
         } else {
-            if(data.Datapoints.length > 1)
+            if(data.Datapoints.length > 1){
                res.send(data.Datapoints || {"status": "error", "msg":"No hay metricas para este objeto.\n", "metric": metric, "data": data});
-            else
+               logts("Resp: ", data.Datapoints);
+            }else{
                res.send(data.Datapoints[0] || {"status": "error", "msg":"No hay metricas para este objeto.\n", "metric": metric, "data": data});
+               logts("Resp: ", data.Datapoints);
+            }
                
         }
     });

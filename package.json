@@ -1,23 +1,23 @@
 {
   "name": "CloudWatch",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "private": true,
   "scripts": {
     "start": "node ./bin/cloudwatch"
   },
   "dependencies": {
-    "aws-sdk": "^2.700.0",
+    "aws-sdk": "^2.1146.0",
     "basic-auth": "^2.0.1",
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "express": "~4.16.1",
+    "cookie-parser": "^1.4.6",
+    "debug": "^4.3.4",
+    "express": "^4.18.1",
     "express-bearer-token": "^2.4.0",
-    "figlet": "^1.5.0",
-    "http-errors": "~1.6.3",
+    "figlet": "^1.5.2",
+    "http-errors": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
-    "moment": "^2.27.0",
-    "morgan": "~1.9.1",
+    "moment": "^2.29.3",
+    "morgan": "^1.10.0",
     "present": "^1.0.0",
-    "pug": "^3.0.0"
+    "pug": "^3.0.2"
   }
 }

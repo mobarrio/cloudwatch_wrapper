@@ -108,25 +108,21 @@ function getMetrics(req, res, next) {
       }
     });
 
-    // 86400 Seconds. (1 day = 86400 seconds.)
-    //--start-time 2016-10-19T00:00:00Z --end-time 2016-10-20T00:00:00Z 
-
     var durationInMinutes = 60;
     var period = metric.Period || durationInMinutes * 60;
     var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
     var EndTime = new Date;
     var StartTime = new Date(EndTime - 15*60*1000);
-    var params = {
+
+    var Header = {
         "EndTime": (typeof metric.EndTime === 'undefined') ? EndTime : metric.EndTime,
         "StartTime": (typeof metric.StartTime === 'undefined') ? StartTime : metric.StartTime,
-        "Period": (typeof metric.Period === 'undefined') ? period : metric.Period,
-        "Namespace": metric.Namespace,
-        "MetricName": metric.MetricName,
-        "Dimensions": metric.Dimensions,
-        "Statistics": metric.Statistics || ['SampleCount', 'Average', 'Sum', 'Minimum', 'Maximum'],
+        "Period": (typeof metric.Period === 'undefined') ? period : metric.Period
     };
 
-    logts("getMetricStatistics: " , params);
+    var params = Object.assign(Header, metric);
+
+    log("Request: " , params);
 
     cw.getMetricStatistics(params, function (err, data) {
         if (err) {

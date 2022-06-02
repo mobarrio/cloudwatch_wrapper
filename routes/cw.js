@@ -48,14 +48,14 @@ function getHealthCheck(req, res, next) {
 
 function ListMetrics(req, res, next) {
   try {
-    const account = req.body.Config.Account || 'pro';
+    const account = req.body.Config.Account || 'ae-devops';
     const region = req.body.Config.Region;
     const metric = req.body.Metric;
     var credentials = new AWS.SharedIniFileCredentials({profile: account});
 
     logts("Account: ", account);
-    logts("Region: ", region);
-    logts("Credentials: ",  credentials);
+    logts("Region : ", region);
+    logts("Metric : ", metric);
 
     AWS.config.update({
       region: region,
@@ -67,14 +67,10 @@ function ListMetrics(req, res, next) {
     });
 
     var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
-    var params = {};
-    params.Namespace = metric.Namespace;
-    if(typeof metric.MetricName === "string") { params.MetricName = metric.MetricName; }
-    params.Dimensions = metric.Dimensions || [];
 
-    logts("listMetrics: " , params);
+    logts("Request: " , metric);
 
-    cw.listMetrics(params, function(err, data) {
+    cw.listMetrics(metric, function(err, data) {
       if (err) {
         logts("Error: ", err);
       } else {
@@ -96,8 +92,8 @@ function getMetrics(req, res, next) {
     var credentials = new AWS.SharedIniFileCredentials({profile: account});
 
     logts("Account: ", account);
-    logts("Region: ", region);
-    logts("Credentials: ",  credentials);
+    logts("Region : ", region);
+    logts("Metrics: ", metric);
 
     AWS.config.update({
       region: region,
@@ -122,24 +118,24 @@ function getMetrics(req, res, next) {
 
     var params = Object.assign(Header, metric);
 
-    log("Request: " , params);
+    logts("Request: " , params);
 
     cw.getMetricStatistics(params, function (err, data) {
         if (err) {
           logts("Error: ", err);
         } else {
             if(data.Datapoints.length > 1){
-               res.send(data.Datapoints || {"status": "error", "msg":"No hay metricas para este objeto.\n", "metric": metric, "data": data});
+               res.send(data.Datapoints || {"status": "error", "msg":"No hay metricas para este objeto.", "metric": metric, "data": data});
                logts("Resp: ", data.Datapoints);
             }else{
-               res.send(data.Datapoints[0] || {"status": "error", "msg":"No hay metricas para este objeto.\n", "metric": metric, "data": data});
+               res.send(data.Datapoints[0] || {"status": "error", "msg":"No hay metricas para este objeto.", "metric": metric, "data": data});
                logts("Resp: ", data.Datapoints);
             }
                
         }
     });
   } catch (error) {
-    res.status(401).json({status: "error", msg: "Error retrieveing credentials"});
+    res.status(401).json({status: "error", msg: "Error generico. Verificar la consulta realizada."});
     return
   }
 };

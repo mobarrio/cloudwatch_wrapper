@@ -3,47 +3,15 @@ var router = express.Router();
 var AWS = require('aws-sdk');
 var jwt = require('jsonwebtoken');
 var present = require('present');
+const logger = require('../config/logger');
 
 function getApiHelp(req, res, next) {
     res.render('help', { title: 'Cloudwatch Wrapper', version: 'v1' });   
 };
 
 function getHealthCheck(req, res, next) {
-  try {
     const t0 = present();
-    const account = req.body.Config.Account || 'pro';
-    const region = req.body.Config.Region;
-    const metric = req.body.Metric;
-    var credentials = new AWS.SharedIniFileCredentials({profile: account});
-
-    logts("Account: ", account);
-    logts("Region: ", region);
-    logts("Credentials: ",  credentials);
-    logts("Metric: " , metric);
-
-    AWS.config.update({
-      region: region,
-      credentials: credentials,
-      httpOptions: {
-        connectTimeout: 1000, // Syn Timeout
-        timeout: 3000 // Inactivity timeout
-      }
-    });
-
-    var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
-    cw.listMetrics(metric, function(err, data) {
-      if (err) {
-        logts("Error: ", err);
-        res.json({ status: 0, msg: err, responseTime: (present()-t0), unit: "ms" }); 
-      } else {
-        res.json({ status: 1, responseTime: (present()-t0), unit: "ms" }); 
-      }
-    });
-
-  } catch (error) {
-    res.status(401).json({status: 0, msg: "Error retrieveing credentials", responseTime: (present()-t0), unit: "ms", metric: metric, region: region, account: account});
-    return
-  }
+    res.json({ status: 1, responseTime: (present()-t0), unit: "ms" }); 
 };
 
 function ListMetrics(req, res, next) {
@@ -53,9 +21,9 @@ function ListMetrics(req, res, next) {
     const metric = req.body.Metric;
     var credentials = new AWS.SharedIniFileCredentials({profile: account});
 
-    logts("Account: ", account);
-    logts("Region : ", region);
-    logts("Metric : ", metric);
+    logger.debug("Account: %s", account);
+    logger.debug("Region : %s", region);
+    logger.debug("Metric : %o", metric);
 
     AWS.config.update({
       region: region,
@@ -68,14 +36,15 @@ function ListMetrics(req, res, next) {
 
     var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
 
-    logts("Request: " , metric);
+    logger.debug("Request: %o" , metric);
 
     cw.listMetrics(metric, function(err, data) {
       if (err) {
-        logts("Error: ", err);
+        logger.debug("Error: %s", err);
+        res.send({"status": "error", "msg":err, "metric": metric});
       } else {
         res.send(data);
-        logts("Resp: ", data);
+        logger.debug("Resp: %s", data);
       }
     });
   } catch (error) {
@@ -91,9 +60,9 @@ function getMetrics(req, res, next) {
     const metric = req.body.Metric;
     var credentials = new AWS.SharedIniFileCredentials({profile: account});
 
-    logts("Account: ", account);
-    logts("Region : ", region);
-    logts("Metrics: ", metric);
+    logger.debug("Account: %s", account);
+    logger.debug("Region : %s", region);
+    logger.debug("Metrics: %o", metric);
 
     AWS.config.update({
       region: region,
@@ -118,18 +87,19 @@ function getMetrics(req, res, next) {
 
     var params = Object.assign(Header, metric);
 
-    logts("Request: " , params);
+    logger.debug("Request: %o" , params);
 
     cw.getMetricStatistics(params, function (err, data) {
         if (err) {
-          logts("Error: ", err);
+          logger.debug("Error: %s", err);
+          res.send({"status": "error", "msg":err, "metric": metric, "data": data});
         } else {
             if(data.Datapoints.length > 1){
                res.send(data.Datapoints || {"status": "error", "msg":"No hay metricas para este objeto.", "metric": metric, "data": data});
-               logts("Resp: ", data.Datapoints);
+               logger.debug("Resp: %o", data.Datapoints);
             }else{
                res.send(data.Datapoints[0] || {"status": "error", "msg":"No hay metricas para este objeto.", "metric": metric, "data": data});
-               logts("Resp: ", data.Datapoints);
+               logger.debug("Resp: %o", data.Datapoints);
             }
                
         }

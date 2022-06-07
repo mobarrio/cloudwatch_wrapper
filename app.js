@@ -1,34 +1,22 @@
+require('./env');
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const moment = require('moment');
+const momenttz = require('moment-timezone');
 const bearerToken = require('express-bearer-token');
 const figlet  = require('figlet');
 const auth = require('basic-auth');
 const conf = require('./config/config');
 const pkgname = process.env.npm_package_name || "CloudWatch";
 const pkgversion = require('./package.json').version;
-const debug = false; // Set true para ver debug por consola.
-
-global.logts = function(msg, err){
-   let ts = moment(new Date()).format('DD/MM/YYYY HH:mm:ss.SSS - ')
-   err = err || "";
-   if(debug){
-      console.log(ts, msg, err);
-
-      /*
-      if(typeof(msg) === 'object') console.dir(msg, {depth: null, colors: true, maxArrayLength: null});
-      else debug && console.log(ts + msg);
-
-      if(typeof(err) === 'object') console.dir(err, {depth: null, colors: true, maxArrayLength: null});
-      else debug && console.log(ts + err);
-      */
-   }
- };
+const logts = require('./config/logger');
+const morgan = require('morgan');
+morgan.token('date', function(req, res, tz) { return momenttz().tz(tz).format('YYYY-MM-DD HH:mm:ss.SSS -'); });
+morgan.format('cwformat', ':date[Europe/Madrid] [debug] :method :url (:response-time ms)');
 
 Array.prototype.findReg = function(match) {
    var reg = new RegExp(match);
@@ -40,6 +28,7 @@ Array.prototype.findReg = function(match) {
 
 console.log(figlet.textSync('  '+pkgname+' - '+pkgversion));
 console.log("------------------------------------------------------------------------------------------------");
+logts.debug('Debug is ON');
 var indexRouter  = require('./routes/index');
 var cwRouter     = require('./routes/cw');
 var authRouter   = require('./routes/authentication');
@@ -52,32 +41,35 @@ app.set('view engine', 'pug');
 app.set('privateKey', fs.readFileSync('config/jwtRS256.key'));
 app.set('logedIn',0);
 
-app.use(logger('dev'));
+if (process.env.LOG_LEVEL === 'debug') {
+    app.use(morgan('cwformat'));
+    // app.use(morgan('dev'));
+  }
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bearerToken());
 app.use(function(req, res, next) {
-   logts('Middleware de autenticaicon Basic');
+   logts.debug('Middleware de autenticaicon Basic');
    if(req.token) {
-      logts('Bearer token definodo. Procede con Autenticacion JWT.');
+      logts.debug('Bearer token definodo. Procede con Autenticacion JWT.');
       next();
    }else{
-      logts('Bearer token no definodo. Procede con Autenticacion Basic.');
+      logts.debug('Bearer token no definodo. Procede con Autenticacion Basic.');
       var credentials = auth(req);
       if (credentials === undefined ) { 
          if(credentials != undefined && (credentials.name === "admin" && credentials.pass === "zabbix")) {
-            logts('Usuario autenticado.');
+            logts.debug('Usuario autenticado.');
             next();
          }else{
-            logts('Usuario no autenticado.');
+            logts.debug('Usuario no autenticado.');
             res.statusCode = 401;
             res.setHeader('WWW-Authenticate', 'Basic realm="Cloudwatch Wrapper"');
             res.end('Unauthorized.');
          } 
       } else {
-         logts('Usuario autenticado credenciales disponibles.');
+         logts.debug('Usuario autenticado credenciales disponibles.');
          const authstr = credentials.name + ':' + credentials.pass;
          req.headers.authorization = 'Basic ' + new Buffer.alloc(authstr.length,authstr).toString('base64');
          next();
@@ -86,24 +78,24 @@ app.use(function(req, res, next) {
 });
 
 app.use(function(req, res, next) {
-   logts('Middleware de autenticaicon Bearer');
-   logts(req.url.valueOf());
+   logts.debug('Middleware de autenticaicon Bearer');
+   logts.debug(req.url.valueOf());
    if (conf.auth.exclude.findReg(req.url.valueOf())) {
-      logts('Endpoint excluido de autenticacion.');
+      logts.debug('Endpoint excluido de autenticacion.');
       return next();
    }else{
-      logts('Verificacion del Bearer token.');
+      logts.debug('Verificacion del Bearer token.');
       if (req.token) {
          jwt.verify(req.token, req.app.get('privateKey'), { algorithms: ['RS256'] }, function(err, decoded) {
          if (err) {
             return res.json({ msg: err });
          } else {
-         logts('Bearer token verificado.');
+         logts.debug('Bearer token verificado.');
          next();
          }
          });
       } else {
-         logts('Bearer token no encontrado.');
+         logts.debug('Bearer token no encontrado.');
          res.send({ msg: 'Bearer token not found.' });
       }
    }

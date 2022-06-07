@@ -1,6 +1,6 @@
 {
   "name": "CloudWatch",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "private": true,
   "scripts": {
     "start": "node ./bin/cloudwatch"
@@ -16,8 +16,10 @@
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.3",
+    "moment-timezone": "^0.5.34",
     "morgan": "^1.10.0",
     "present": "^1.0.0",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "winston": "^3.7.2"
   }
 }

@@ -104,6 +104,7 @@ app.use(function(req, res, next) {
 // Routes
 app.use('/',       indexRouter);
 app.use('/api',    cwRouter);
+app.use('/api/v1/aws',    cwRouter);
 app.use('/auth',   authRouter);
 app.use('/health', healthRouter);
 

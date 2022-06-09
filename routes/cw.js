@@ -120,10 +120,11 @@ router.get('/v1', getApiHelp);
 router.get('/v1/health', getHealthCheck);
 router.get('/v1/aws/listmetrics', ListMetrics);
 router.get('/v1/aws/getmetrics', Dummy);
+router.post('/v1/aws/listmetrics', ListMetrics);
 router.post('/v1/aws/getmetrics', getMetrics);
-router.get('*', (req, res) => res.status(403).json({
-  errorCode: '404',
-  errorDescription: 'Ruta no encontrada'
-}));
+
+router.get('*', (req, res) => res.status(403).json({ errorCode: '403', errorDescription: 'Forbidden.' }));
+router.post('*', (req, res) => res.status(403).json({ errorCode: '403', errorDescription: ' Forbidden' }));
+router.all('*', (req, res) => res.status(405).json({ errorCode: '405', errorDescription: req.method + ' is Method Not Allowed.' }));
 
 module.exports = router;

@@ -7,11 +7,13 @@ const logger = require('../config/logger');
 
 function getApiHelp(req, res, next) {
     res.render('help', { title: 'Cloudwatch Wrapper', version: 'v1' });   
+    logger.debug("getApiHelp - Render Cloudwatch Wrapper v1");
 };
 
 function getHealthCheck(req, res, next) {
     const t0 = present();
     res.json({ status: 1, responseTime: (present()-t0), unit: "ms" }); 
+    logger.debug("getHealthCheck - Data: %o", { status: 1, responseTime: (present()-t0), unit: "ms" });
 };
 
 function ListMetrics(req, res, next) {
@@ -20,10 +22,6 @@ function ListMetrics(req, res, next) {
     const region = req.body.Config.Region;
     const metric = req.body.Metric;
     var credentials = new AWS.SharedIniFileCredentials({profile: account});
-
-    logger.debug("Account: %s", account);
-    logger.debug("Region : %s", region);
-    logger.debug("Metric : %o", metric);
 
     AWS.config.update({
       region: region,
@@ -35,16 +33,15 @@ function ListMetrics(req, res, next) {
     });
 
     var cw = new AWS.CloudWatch({ apiVersion: '2010-08-01' });
-
-    logger.debug("Request: %o" , metric);
+    logger.debug("ListMetrics - Body: %o", req.body);
 
     cw.listMetrics(metric, function(err, data) {
       if (err) {
-        logger.debug("Error: %s", err);
+        logger.debug("ListMetrics - Error: %s", err);
         res.send({"status": "error", "msg":err, "metric": metric});
       } else {
         res.send(data);
-        logger.debug("Resp: %s", data);
+        logger.debug("ListMetrics - Resp: %s", data);
       }
     });
   } catch (error) {
@@ -60,9 +57,7 @@ function getMetrics(req, res, next) {
     const metric = req.body.Metric;
     var credentials = new AWS.SharedIniFileCredentials({profile: account});
 
-    logger.debug("Account: %s", account);
-    logger.debug("Region : %s", region);
-    logger.debug("Metrics: %o", metric);
+    logger.debug("getMetrics - Body: %o", req.body);
 
     AWS.config.update({
       region: region,
@@ -87,44 +82,35 @@ function getMetrics(req, res, next) {
 
     var params = Object.assign(Header, metric);
 
-    logger.debug("Request: %o" , params);
+    logger.debug("getMetrics - Request: %o" , params);
 
     cw.getMetricStatistics(params, function (err, data) {
         if (err) {
-          logger.debug("Error: %s", err);
+          logger.debug("getMetrics - Error: %s", err);
           res.send({"status": "error", "msg":err, "metric": metric, "data": data});
         } else {
             if(data.Datapoints.length > 1){
                res.send(data.Datapoints || {"status": "error", "msg":"No hay metricas para este objeto.", "metric": metric, "data": data});
-               logger.debug("Resp: %o", data.Datapoints);
+               logger.debug("getMetrics - Resp: %o", data.Datapoints);
             }else{
                res.send(data.Datapoints[0] || {"status": "error", "msg":"No hay metricas para este objeto.", "metric": metric, "data": data});
-               logger.debug("Resp: %o", data.Datapoints);
+               logger.debug("getMetrics - Resp: %o", data.Datapoints);
             }
                
         }
     });
   } catch (error) {
     res.status(401).json({status: "error", msg: "Error generico. Verificar la consulta realizada."});
+    logger.debug("getMetrics - Error: %o", error);
     return
   }
-};
-
-function Dummy(rreq, res, next){
-  res.status(404).json({status: "error", msg: "Ruta no encontrada"});
-  return
 };
 
 router.get('/', getApiHelp);
 router.get('/v1', getApiHelp);
 router.get('/v1/health', getHealthCheck);
 router.get('/v1/aws/listmetrics', ListMetrics);
-router.get('/v1/aws/getmetrics', Dummy);
 router.post('/v1/aws/listmetrics', ListMetrics);
 router.post('/v1/aws/getmetrics', getMetrics);
-
-router.get('*', (req, res) => res.status(403).json({ errorCode: '403', errorDescription: 'Forbidden.' }));
-router.post('*', (req, res) => res.status(403).json({ errorCode: '403', errorDescription: ' Forbidden' }));
-router.all('*', (req, res) => res.status(405).json({ errorCode: '405', errorDescription: req.method + ' is Method Not Allowed.' }));
 
 module.exports = router;

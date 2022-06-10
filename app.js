@@ -13,7 +13,7 @@ const auth = require('basic-auth');
 const conf = require('./config/config');
 const pkgname = process.env.npm_package_name || "CloudWatch";
 const pkgversion = require('./package.json').version;
-const logts = require('./config/logger');
+const logger = require('./config/logger');
 const morgan = require('morgan');
 morgan.token('date', function(req, res, tz) { return momenttz().tz(tz).format('YYYY-MM-DD HH:mm:ss.SSS -'); });
 morgan.format('cwformat', ':date[Europe/Madrid] [debug] :method :url (:response-time ms)');
@@ -28,7 +28,7 @@ Array.prototype.findReg = function(match) {
 
 console.log(figlet.textSync('  '+pkgname+' - '+pkgversion));
 console.log("------------------------------------------------------------------------------------------------");
-logts.debug('Debug is ON');
+logger.debug('APP - Debug is ON');
 var indexRouter  = require('./routes/index');
 var cwRouter     = require('./routes/cw');
 var authRouter   = require('./routes/authentication');
@@ -51,25 +51,25 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bearerToken());
 app.use(function(req, res, next) {
-   logts.debug('Middleware de autenticaicon Basic');
+   logger.debug('APP - Middleware de autenticaicon Basic');
    if(req.token) {
-      logts.debug('Bearer token definodo. Procede con Autenticacion JWT.');
+      logger.debug('APP - Bearer token definodo. Procede con Autenticacion JWT.');
       next();
    }else{
-      logts.debug('Bearer token no definodo. Procede con Autenticacion Basic.');
+      logger.debug('APP - Bearer token no definodo. Procede con Autenticacion Basic.');
       var credentials = auth(req);
       if (credentials === undefined ) { 
          if(credentials != undefined && (credentials.name === "admin" && credentials.pass === "zabbix")) {
-            logts.debug('Usuario autenticado.');
+            logger.debug('APP - Usuario autenticado.');
             next();
          }else{
-            logts.debug('Usuario no autenticado.');
             res.statusCode = 401;
             res.setHeader('WWW-Authenticate', 'Basic realm="Cloudwatch Wrapper"');
             res.end('Unauthorized.');
+            logger.debug('APP - Usuario no autenticado.');
          } 
       } else {
-         logts.debug('Usuario autenticado credenciales disponibles.');
+         logger.debug('APP - Usuario autenticado credenciales disponibles.');
          const authstr = credentials.name + ':' + credentials.pass;
          req.headers.authorization = 'Basic ' + new Buffer.alloc(authstr.length,authstr).toString('base64');
          next();
@@ -78,41 +78,45 @@ app.use(function(req, res, next) {
 });
 
 app.use(function(req, res, next) {
-   logts.debug('Middleware de autenticaicon Bearer');
-   logts.debug(req.url.valueOf());
+   logger.debug('APP - Middleware de autenticaicon Bearer');
+   logger.debug('APP -  %o',req.url.valueOf());
    if (conf.auth.exclude.findReg(req.url.valueOf())) {
-      logts.debug('Endpoint excluido de autenticacion.');
+      logger.debug('APP - Endpoint excluido de autenticacion.');
       return next();
    }else{
-      logts.debug('Verificacion del Bearer token.');
+      logger.debug('APP - Verificacion del Bearer token.');
       if (req.token) {
          jwt.verify(req.token, req.app.get('privateKey'), { algorithms: ['RS256'] }, function(err, decoded) {
          if (err) {
+            logger.debug('APP - Error: %o',err);
             return res.json({ msg: err });
          } else {
-         logts.debug('Bearer token verificado.');
+            logger.debug('APP - Bearer token verificado.');
          next();
          }
          });
       } else {
-         logts.debug('Bearer token no encontrado.');
+         logger.debug('APP - Bearer token no encontrado.');
          res.send({ msg: 'Bearer token not found.' });
       }
    }
 });
 
 // Routes
-app.use('/',       indexRouter);
-app.use('/api',    cwRouter);
-app.use('/api/v1/aws',    cwRouter);
-app.use('/auth',   authRouter);
-app.use('/health', healthRouter);
+app.use('/',              indexRouter);
+app.use('/api',           cwRouter);
+app.use('/auth',          authRouter);
+app.use('/health',        healthRouter);
+
+// router.get('*', (req, res) => res.status(403).json({ errorCode: '403', errorDescription: 'Forbidden.' }));
+// router.post('*', (req, res) => res.status(403).json({ errorCode: '403', errorDescription: ' Forbidden' }));
+//router.all('*', (req, res) => res.status(405).json({ errorCode: '405', errorDescription: req.method + ' is Method Not Allowed.' }));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
    res.status(400);
    res.render('404.pug', {title: '404: File Not Found'});
-
+   logger.debug('APP - Render %o',{title: '404: File Not Found'});
 });
 
 // error handler
@@ -123,6 +127,7 @@ app.use(function(err, req, res, next) {
    // render the error page
    res.status(err.status || 500);
    res.render('error');
+   logger.debug('APP - Render Error 500');
 });
 
 module.exports = app;

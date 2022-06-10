@@ -1,6 +1,6 @@
 {
-  "name": "CloudWatch",
-  "version": "0.0.10",
+  "name": "CloudWatch Wrapper",
+  "version": "0.0.11",
   "private": true,
   "scripts": {
     "start": "node ./bin/cloudwatch"

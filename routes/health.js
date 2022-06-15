@@ -3,8 +3,8 @@ const router = express();
 const logger = require('../config/logger');
 
 router.get('/', (req, res) => { 
-    res.json({ status: 1, msg: "0: DOWN, 1: UP" });
-    logger.debug("Health - Data: %o", { status: 1, msg: "0: DOWN, 1: UP" });
+    res.json({ status: 1, msg: "UP" });
+    logger.debug("Health - Data: %o", { status: 1, msg: "UP" });
 });
 
 module.exports = router;

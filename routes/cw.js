@@ -5,17 +5,6 @@ var jwt = require('jsonwebtoken');
 var present = require('present');
 const logger = require('../config/logger');
 
-function getApiHelp(req, res, next) {
-    res.render('help', { title: 'Cloudwatch Wrapper', version: 'v1' });   
-    logger.debug("getApiHelp - Render Cloudwatch Wrapper v1");
-};
-
-function getHealthCheck(req, res, next) {
-    const t0 = present();
-    res.json({ status: 1, responseTime: (present()-t0), unit: "ms" }); 
-    logger.debug("getHealthCheck - Data: %o", { status: 1, responseTime: (present()-t0), unit: "ms" });
-};
-
 function ListMetrics(req, res, next) {
   try {
     const account = req.body.Config.Account || 'ae-devops';
@@ -37,7 +26,7 @@ function ListMetrics(req, res, next) {
 
     cw.listMetrics(metric, function(err, data) {
       if (err) {
-        logger.debug("ListMetrics - Error: %s", err);
+        logger.error("ListMetrics - Error: %s", err);
         res.send({"status": "error", "msg":err, "metric": metric});
       } else {
         res.send(data);
@@ -46,6 +35,7 @@ function ListMetrics(req, res, next) {
     });
   } catch (error) {
     res.status(401).json({status: "error", msg: "Error retrieveing credentials", metric: metric, region: region, account: account});
+    logger.error("ListMetrics - Error: %o", error);
     return
   }
 };
@@ -86,7 +76,7 @@ function getMetrics(req, res, next) {
 
     cw.getMetricStatistics(params, function (err, data) {
         if (err) {
-          logger.debug("getMetrics - Error: %s", err);
+          logger.error("getMetrics - Error: %s", err);
           res.send({"status": "error", "msg":err, "metric": metric, "data": data});
         } else {
             if(data.Datapoints.length > 1){
@@ -101,16 +91,13 @@ function getMetrics(req, res, next) {
     });
   } catch (error) {
     res.status(401).json({status: "error", msg: "Error generico. Verificar la consulta realizada."});
-    logger.debug("getMetrics - Error: %o", error);
+    logger.error("getMetrics - Error: %o", error);
     return
   }
 };
 
-router.get('/', getApiHelp);
-router.get('/v1', getApiHelp);
-router.get('/v1/health', getHealthCheck);
-router.get('/v1/aws/listmetrics', ListMetrics);
-router.post('/v1/aws/listmetrics', ListMetrics);
-router.post('/v1/aws/getmetrics', getMetrics);
+router.get('/listmetrics', ListMetrics);
+router.post('/listmetrics', ListMetrics);
+router.post('/getmetrics', getMetrics);
 
 module.exports = router;

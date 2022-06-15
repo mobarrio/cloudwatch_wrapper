@@ -29,10 +29,13 @@ Array.prototype.findReg = function(match) {
 console.log(figlet.textSync('  '+pkgname+' - '+pkgversion));
 console.log("------------------------------------------------------------------------------------------------");
 logger.debug('APP - Debug is ON');
+
+// Definicion de los diferentes routers
 var indexRouter  = require('./routes/index');
 var cwRouter     = require('./routes/cw');
 var authRouter   = require('./routes/authentication');
 var healthRouter = require('./routes/health');
+var HHRouter     = require('./routes/help');
 var app = express();
 
 // view engine setup
@@ -104,12 +107,20 @@ app.use(function(req, res, next) {
 
 // Routes
 app.use('/',              indexRouter);
-app.use('/api',           cwRouter);
+app.use('/api',           HHRouter);
+app.use('/api/v1',        HHRouter);
+app.use('/api/v1/aws',    cwRouter);
 app.use('/auth',          authRouter);
 app.use('/health',        healthRouter);
 
-// router.get('*', (req, res) => res.status(403).json({ errorCode: '403', errorDescription: 'Forbidden.' }));
-// router.post('*', (req, res) => res.status(403).json({ errorCode: '403', errorDescription: ' Forbidden' }));
+/*
+app.use('/',              indexRouter);
+app.use('/api',           cwRouter);
+app.use('/auth',          authRouter);
+app.use('/health',        healthRouter);
+*/
+
+
 //router.all('*', (req, res) => res.status(405).json({ errorCode: '405', errorDescription: req.method + ' is Method Not Allowed.' }));
 
 // catch 404 and forward to error handler

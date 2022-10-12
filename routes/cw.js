@@ -16,8 +16,8 @@ function ListMetrics(req, res, next) {
       region: region,
       credentials: credentials,
       httpOptions: {
-        connectTimeout: 1000, // Syn Timeout
-        timeout: 3000 // Inactivity timeout
+        connectTimeout: 5000, // Syn Timeout
+        timeout: 30000 // Inactivity timeout
       }
     });
 
@@ -53,8 +53,8 @@ function getMetrics(req, res, next) {
       region: region,
       credentials: credentials,
       httpOptions: {
-        connectTimeout: 1000, // Syn Timeout
-        timeout: 3000 // Inactivity timeout
+        connectTimeout: 5000, // Syn Timeout
+        timeout: 30000 // Inactivity timeout
       }
     });
 

@@ -91,7 +91,7 @@ function describeRDS(req, res, next) {
 
   } catch (error) {
     res.status(401).json({status: "error", msg: "Error retrieveing credentials", region: region, account: account});
-    logger.error("ListMetrics - Error: %o", error);
+    logger.error("RDS - Error: %o", error);
     return
   }
 

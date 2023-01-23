@@ -1,2 +1,2 @@
-process.env.LOG_LEVEL="info";
-//process.env.DEBUG="express:*";
+process.env.LOG_LEVEL="debug";
+// process.env.DEBUG="express:*";

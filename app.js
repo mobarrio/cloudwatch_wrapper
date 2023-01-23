@@ -33,6 +33,7 @@ logger.debug('APP - Debug is ON');
 // Definicion de los diferentes routers
 var indexRouter  = require('./routes/index');
 var cwRouter     = require('./routes/cw');
+var rdsRouter    = require('./routes/rds');
 var authRouter   = require('./routes/authentication');
 var healthRouter = require('./routes/health');
 var HHRouter     = require('./routes/help');
@@ -106,20 +107,13 @@ app.use(function(req, res, next) {
 });
 
 // Routes
-app.use('/',              indexRouter);
-app.use('/api',           HHRouter);
-app.use('/api/v1',        HHRouter);
-app.use('/api/v1/aws',    cwRouter);
-app.use('/auth',          authRouter);
-app.use('/health',        healthRouter);
-
-/*
-app.use('/',              indexRouter);
-app.use('/api',           cwRouter);
-app.use('/auth',          authRouter);
-app.use('/health',        healthRouter);
-*/
-
+app.use('/',               indexRouter);
+app.use('/api',            HHRouter);
+app.use('/api/v1',         HHRouter);
+app.use('/api/v1/aws',     cwRouter);
+app.use('/api/v1/aws/rds', rdsRouter);
+app.use('/auth',           authRouter);
+app.use('/health',         healthRouter);
 
 //router.all('*', (req, res) => res.status(405).json({ errorCode: '405', errorDescription: req.method + ' is Method Not Allowed.' }));
 

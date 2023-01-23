@@ -7,6 +7,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - CRED=pro
+      - CRED=pre
     volumes:
       - ~/.aws/credentials:/root/.aws/credentials:ro
+      - ./env.js:/usr/src/app/env.js

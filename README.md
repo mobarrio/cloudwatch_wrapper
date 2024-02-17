@@ -20,19 +20,7 @@ El objetivo es que mediante una llamada HTTP podamos extraer datos de CloudWatch
 [default]
 aws_access_key_id = AKI5GDGSDSDS4ASFRET4
 aws_secret_access_key = SFgkl43DFSDF45rgfGDF56tHGF45SDFSVsdtgD3f
-
-[pro]
-aws_access_key_id = ACCESS_KEY
-aws_secret_access_key = SECRET_KEY
-
-[pre]
-aws_access_key_id = ACCESS_KEY
-aws_secret_access_key = SECRET_KEY
-
-[dev]
-aws_access_key_id = ACCESS_KEY
-aws_secret_access_key = SECRET_KEY
-
+aws_session_token = 
 ```
 
 

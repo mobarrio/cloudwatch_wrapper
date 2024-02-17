@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var AWS = require('aws-sdk');
-var jwt = require('jsonwebtoken');
+	var jwt = require('jsonwebtoken');
 var present = require('present');
 const logger = require('../config/logger');
 

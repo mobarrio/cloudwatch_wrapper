@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var AWS = require('aws-sdk');
+
+const { RDSClient, DescribeDBInstancesCommand } = require("@aws-sdk/client-rds");
+
 var jwt = require('jsonwebtoken');
 var present = require('present');
 const logger = require('../config/logger');
@@ -64,34 +66,26 @@ function extraeClaves(Filter, jsonx){
 
 function describeRDS(req, res, next) {
   try {
-    const account = req.body.Config.Account || 'pro';
-    const region = req.body.Config.Region;
-    const filter = req.body.Filter;
-    var credentials = new AWS.SharedIniFileCredentials({profile: account});
+    var account = req.body.Config.Account || 'pro';
+    var region = req.body.Config.Region;
+    var filter = req.body.Filter;
 
-    AWS.config.update({
-      region: region,
-      credentials: credentials,
-      httpOptions: {
-        connectTimeout: 5000, // Syn Timeout
-        timeout: 30000 // Inactivity timeout
+    const client = new RDSClient({ region: region });
+    const command = new DescribeDBInstancesCommand(filter);
+
+    (async () => {
+      try {
+        const data = await client.send(command);
+        logger.debug("APP - Module RDS Function describeRDS - Send command Response OK");
+        res.send(data);
+      } catch (error) {
+        logger.error("APP - Module RDS Function describeRDS - Error: %s", error);
+        res.send({"status": "error", "msg":error, "metric": data});
       }
-    });
-
-    // Crear una instancia de AmazonRDS
-    var rds = new AWS.RDS();
-    rds.describeDBInstances(function(err, data) {
-      if (err) {
-        logger.error("DescribeRDS - Error: %s", err);
-        res.send({"status": "error", "msg":err, region: region, account: account});
-      } else {
-        res.send(extraeClaves(filter,data.DBInstances));
-      }
-    });
-
+    })();
   } catch (error) {
     res.status(401).json({status: "error", msg: "Error retrieveing credentials", region: region, account: account});
-    logger.error("RDS - Error: %o", error);
+    logger.error("APP - Module RDS Function describeRDS - Error: %o", error);
     return
   }
 

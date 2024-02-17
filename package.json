@@ -1,25 +1,26 @@
 {
   "name": "CloudWatch Wrapper",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "private": true,
   "scripts": {
     "start": "node ./bin/cloudwatch"
   },
   "dependencies": {
-    "aws-sdk": "^2.1297.0",
+    "@aws-sdk/client-cloudwatch": "^3.515.0",
+    "@aws-sdk/client-rds": "^3.511.0",
     "basic-auth": "^2.0.1",
     "cookie-parser": "^1.4.6",
     "debug": "^4.3.4",
-    "express": "^4.18.1",
+    "express": "^4.18.2",
     "express-bearer-token": "^2.4.0",
-    "figlet": "^1.5.2",
+    "figlet": "^1.7.0",
     "http-errors": "^2.0.0",
-    "jsonwebtoken": "^9.0.0",
-    "moment": "^2.29.3",
-    "moment-timezone": "^0.5.34",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45",
     "morgan": "^1.10.0",
     "present": "^1.0.0",
     "pug": "^3.0.2",
-    "winston": "^3.7.2"
+    "winston": "^3.11.0"
   }
 }
